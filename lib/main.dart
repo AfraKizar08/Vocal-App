@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'pages/home_page.dart';
+import 'pages/home_page.dart' as home; // Use an alias for home_page.dart
 import 'pages/profile_page.dart';
 import 'pages/search_page.dart';
 import 'pages/upload_page.dart';
 import 'pages/playlist_page.dart';
+import 'pages/login_page.dart'; // Import the login page
 
 void main() {
   runApp(VocalsOnlyMusicApp());
@@ -31,7 +32,7 @@ class VocalsOnlyMusicApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: const MainScreen(),
+      home: LoginPage(), // Set the login page as the initial screen
       debugShowCheckedModeBanner: false,
     );
   }
@@ -47,7 +48,7 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   final List<Widget> _pages = [
-    HomePage(),
+    home.HomePage(), // Use the alias here
     SearchPage(),
     UploadPage(),
     PlaylistPage(),
