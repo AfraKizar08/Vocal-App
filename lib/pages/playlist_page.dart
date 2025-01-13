@@ -23,7 +23,7 @@ class PlaylistPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 22,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
+                color: Colors.red,
               ),
             ),
             const SizedBox(height: 10),
@@ -89,7 +89,7 @@ class _PlaylistCardState extends State<PlaylistCard> {
         width: double.infinity, // Ensure full width
         margin: const EdgeInsets.only(bottom: 16.0),
         decoration: BoxDecoration(
-          color: Colors.grey, // Solid background color
+          color: Colors.green, // Solid background color
           borderRadius: BorderRadius.circular(12), // Rounded corners
           boxShadow: [
             BoxShadow(
@@ -142,7 +142,7 @@ class _PlaylistCardState extends State<PlaylistCard> {
             IconButton(
               icon: const Icon(
                 Icons.play_arrow,
-                color: Colors.deepPurple,
+                color: Colors.black,
                 size: 28, // Icon size
               ),
               onPressed: () {

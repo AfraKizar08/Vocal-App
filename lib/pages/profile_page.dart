@@ -1,4 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:vocal_app/pages/HelpAndSupportPage.dart';
+import 'package:vocal_app/pages/LogoutPage.dart';
+import 'package:vocal_app/pages/NotificationsPage.dart';
+import 'package:vocal_app/pages/PrivacySettingsPage.dart';
+
+import 'EditProfilePage.dart';
+import 'ThemePage.dart';
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({Key? key}) : super(key: key);
@@ -23,7 +30,7 @@ class _ProfilePageState extends State<ProfilePage> {
           ),
           decoration: BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.deepPurple, Colors.black],
+              colors: [Colors.green, Colors.black],
               begin: Alignment.topLeft,
               end: Alignment.bottomRight,
             ),
@@ -69,9 +76,13 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: 'Update your personal information',
               onTap: () {
                 Navigator.pop(context);
-                // Handle edit profile action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                );
               },
             ),
+
             const Divider(color: Colors.grey),
             _buildSettingOption(
               icon: Icons.notifications,
@@ -79,7 +90,10 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: 'Manage your notifications',
               onTap: () {
                 Navigator.pop(context);
-                // Handle notifications action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const NotificationsPage()),
+                );
               },
             ),
             const Divider(color: Colors.grey),
@@ -89,7 +103,10 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: 'Adjust your privacy preferences',
               onTap: () {
                 Navigator.pop(context);
-                // Handle privacy settings action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PrivacySettingsPage()),
+                );
               },
             ),
             const Divider(color: Colors.grey),
@@ -99,7 +116,10 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: 'Switch between light and dark modes',
               onTap: () {
                 Navigator.pop(context);
-                // Handle theme action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ThemePage()),
+                );
               },
             ),
             const Divider(color: Colors.grey),
@@ -109,7 +129,10 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: 'Get assistance or contact support',
               onTap: () {
                 Navigator.pop(context);
-                // Handle help & support action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HelpAndSupportPage()),
+                );
               },
             ),
             const Divider(color: Colors.grey),
@@ -119,7 +142,10 @@ class _ProfilePageState extends State<ProfilePage> {
               subtitle: 'Sign out of your account',
               onTap: () {
                 Navigator.pop(context);
-                // Handle logout action
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LogoutPage()),
+                );
               },
             ),
           ],
@@ -143,7 +169,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: Colors.deepPurple.withOpacity(0.2),
-          child: Icon(icon, color: Colors.deepPurple),
+          child: Icon(icon, color: Colors.red),
         ),
         title: Text(
           title,

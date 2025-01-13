@@ -46,7 +46,7 @@ class _UploadPageState extends State<UploadPage> {
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
+                color: Colors.black,
               ),
             ),
             const SizedBox(height: 20),
@@ -67,7 +67,7 @@ class _UploadPageState extends State<UploadPage> {
                 style: TextStyle(fontSize: 16, color: Colors.white),
               ),
               style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
+                backgroundColor: Colors.green,
                 padding:
                 const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
                 shape: RoundedRectangleBorder(
@@ -110,7 +110,7 @@ class _UploadPageState extends State<UploadPage> {
             if (filePath == null)
               const Icon(
                 Icons.music_note,
-                color: Colors.deepPurple,
+                color: Colors.black,
                 size: 100,
               ),
           ],

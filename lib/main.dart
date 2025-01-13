@@ -85,8 +85,8 @@ class _MainScreenState extends State<MainScreen> {
           });
           _pageController.jumpToPage(index);
         },
-        selectedItemColor: Colors.deepPurple,
-        unselectedItemColor: Colors.grey,
+        selectedItemColor: Colors.green,
+        unselectedItemColor: Colors.black,
         items: const [
           BottomNavigationBarItem(
             icon: Icon(Icons.home),
