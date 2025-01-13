@@ -5,8 +5,11 @@ import 'pages/search_page.dart';
 import 'pages/upload_page.dart';
 import 'pages/playlist_page.dart';
 import 'pages/login_page.dart'; // Import the login page
+import 'package:firebase_core/firebase_core.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
   runApp(VocalsOnlyMusicApp());
 }
 
