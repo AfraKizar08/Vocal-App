@@ -22,7 +22,7 @@ class SearchPage extends StatelessWidget {
             // Search Bar
             TextField(
               decoration: InputDecoration(
-                prefixIcon: const Icon(Icons.search, color: Colors.deepPurple),
+                prefixIcon: const Icon(Icons.search, color: Colors.black),
                 hintText: 'Search for tracks, artists, or albums...',
                 hintStyle: const TextStyle(color: Colors.grey),
                 filled: true,
@@ -44,7 +44,7 @@ class SearchPage extends StatelessWidget {
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
-                color: Colors.deepPurple,
+                color: Colors.red,
               ),
             ),
             const SizedBox(height: 10),
@@ -68,7 +68,7 @@ class SearchPage extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Icon(Icons.music_note, size: 80, color: Colors.deepPurple),
+                    Icon(Icons.music_note, size: 80, color: Colors.black),
                     const SizedBox(height: 10),
                     const Text(
                       'Search for your favorite vocals!',
@@ -98,7 +98,7 @@ class TrendingChip extends StatelessWidget {
         label,
         style: const TextStyle(color: Colors.white),
       ),
-      backgroundColor: Colors.deepPurple,
+      backgroundColor: Colors.green,
       padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     );
   }

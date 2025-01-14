@@ -22,7 +22,7 @@ class FavouritesPage extends ConsumerWidget {
           ? const Center(
         child: Text(
           'No Favourites Yet!',
-          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.green),
         ),
       )
           : ListView.builder(

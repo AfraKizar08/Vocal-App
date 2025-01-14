@@ -28,7 +28,7 @@ class HomePage extends StatelessWidget {
                   height: 200,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.black, Colors.purpleAccent],
+                      colors: [Colors.black, Colors.green],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -70,7 +70,7 @@ class HomePage extends StatelessWidget {
                           child: const Text(
                             'Discover Now',
                             style: TextStyle(
-                              color: Colors.deepPurple,
+                              color: Colors.red,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
@@ -94,7 +94,7 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
+                      color: Colors.red,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -137,7 +137,7 @@ class HomePage extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 20,
                       fontWeight: FontWeight.bold,
-                      color: Colors.deepPurple,
+                      color: Colors.red,
                     ),
                   ),
                   const SizedBox(height: 10),
@@ -234,7 +234,7 @@ class _MusicCardState extends State<MusicCard> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundColor: Colors.deepPurple,
+          backgroundColor: Colors.green,
           child: const Icon(Icons.music_note, color: Colors.white),
         ),
         title: Text(
@@ -246,7 +246,7 @@ class _MusicCardState extends State<MusicCard> {
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
-              icon: const Icon(Icons.play_arrow, color: Colors.deepPurple),
+              icon: const Icon(Icons.play_arrow, color: Colors.green),
               onPressed: () {
                 // Handle play action
                 print('Playing ${widget.title}');
