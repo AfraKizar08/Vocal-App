@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
+
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -135,23 +137,29 @@ class HomePage extends StatelessWidget {
                   const Text(
                     'Recent Tracks',
                     style: TextStyle(
-                      fontSize: 20,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.red,
-                    ),
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red ),
                   ),
                   const SizedBox(height: 10),
+                  // Inside the Recent Tracks Section
                   MusicCard(
                     title: 'Acoustic Vibes',
                     subtitle: 'Artist: John Doe',
+                    songPath: 'path/to/acoustic_vibes.mp3', // Replace with actual path
+                    coverImage: 'assets/acoustic_vibes_cover.jpg', // Replace with actual cover image
                   ),
                   MusicCard(
                     title: 'Melody Vocals',
                     subtitle: 'Artist: Jane Smith',
+                    songPath: 'path/to/melody_vocals.mp3', // Replace with actual path
+                    coverImage: 'assets/melody_vocals_cover.jpg', // Replace with actual cover image
                   ),
                   MusicCard(
                     title: 'Harmonic Bliss',
                     subtitle: 'Artist: The Vocal Group',
+                    songPath: 'path/to/harmonic_bliss.mp3', // Replace with actual path
+                    coverImage: 'assets/harmonic_bliss_cover.jpg', // Replace with actual cover image
                   ),
                 ],
               ),
@@ -215,9 +223,16 @@ class TrendingCard extends StatelessWidget {
 class MusicCard extends StatefulWidget {
   final String title;
   final String subtitle;
+  final String songPath; // Add song path
+  final String coverImage; // Add cover image path
 
-  const MusicCard({required this.title, required this.subtitle, Key? key})
-      : super(key: key);
+  const MusicCard({
+    required this.title,
+    required this.subtitle,
+    required this.songPath,
+    required this.coverImage,
+    Key? key,
+  }) : super(key: key);
 
   @override
   _MusicCardState createState() => _MusicCardState();
@@ -248,8 +263,16 @@ class _MusicCardState extends State<MusicCard> {
             IconButton(
               icon: const Icon(Icons.play_arrow, color: Colors.green),
               onPressed: () {
-                // Handle play action
-                print('Playing ${widget.title}');
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MusicPlayer(
+                      name: widget.subtitle.split(': ')[1], // Extract artist name
+                      image: widget.coverImage,
+                      songName: widget.songPath,
+                    ),
+                  ),
+                );
               },
             ),
             IconButton(

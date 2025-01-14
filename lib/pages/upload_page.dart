@@ -1,29 +1,56 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
-import 'package:provider/provider.dart';
-import '../services/audio_processing_service.dart';
+import 'package:vocal_app/services/database_helper.dart';
 
-class UploadPage extends StatefulWidget {
+class AddSongPage extends StatefulWidget {
   @override
-  _UploadPageState createState() => _UploadPageState();
+  _AddSongPageState createState() => _AddSongPageState();
 }
 
-class _UploadPageState extends State<UploadPage> {
-  String? filePath;
+class _AddSongPageState extends State<AddSongPage> {
+  String? audioFilePath;
+  String? coverImagePath;
+  final TextEditingController titleController = TextEditingController();
+  final TextEditingController artistController = TextEditingController();
 
-  Future<void> selectFile() async {
+  Future<void> selectAudioFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       type: FileType.audio,
     );
 
     if (result != null) {
       setState(() {
-        filePath = result.files.single.path!;
+        audioFilePath = result.files.single.path!;
       });
+    }
+  }
 
-      // Process file to extract vocals
-      await Provider.of<AudioProcessingService>(context, listen: false)
-          .extractVocals(filePath!);
+  Future<void> selectCoverImage() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      type: FileType.image,
+    );
+
+    if (result != null) {
+      setState(() {
+        coverImagePath = result.files.single.path!;
+      });
+    }
+  }
+
+  Future<void> saveSong() async {
+    if (audioFilePath != null && coverImagePath != null) {
+      await DatabaseHelper().insertSong({
+        'title': titleController.text,
+        'artist': artistController.text,
+        'filepath': audioFilePath,
+        'coverImage': coverImagePath,
+      });
+      Navigator.pop(context);
+    } else {
+      // Show an error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please select audio and cover image.')),
+      );
     }
   }
 
@@ -31,88 +58,40 @@ class _UploadPageState extends State<UploadPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Upload Music'),
-        backgroundColor: Colors.black,
+        title: const Text('Add Song'),
       ),
       body: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16.0),
+        padding: const EdgeInsets.all(16.0),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            const Text(
-              'Upload Your Favorite Track!',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-                color: Colors.black,
-              ),
+            TextField(
+              controller: titleController,
+              decoration: const InputDecoration(labelText: 'Song Title'),
+            ),
+            TextField(
+              controller: artistController,
+              decoration: const InputDecoration(labelText: 'Artist Name'),
             ),
             const SizedBox(height: 20),
-            const Text(
-              'Select a music file to extract vocals and enhance your listening experience.',
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.grey,
-              ),
+            ElevatedButton(
+              onPressed: selectAudioFile,
+              child: const Text('Select Audio File'),
             ),
-            const SizedBox(height: 40),
-            ElevatedButton.icon(
-              onPressed: selectFile,
-              icon: const Icon(Icons.upload_file, color: Colors.white),
-              label: const Text(
-                'Select a Music File',
-                style: TextStyle(fontSize: 16, color: Colors.white),
-              ),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.green,
-                padding:
-                const EdgeInsets.symmetric(vertical: 12, horizontal: 20),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(10),
-                ),
-              ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: selectCoverImage,
+              child: const Text('Select Cover Image'),
             ),
-            const SizedBox(height: 30),
-            if (filePath != null)
-              Column(
-                children: [
-                  const Icon(
-                    Icons.check_circle,
-                    color: Colors.green,
-                    size: 48,
-                  ),
-                  const SizedBox(height: 10),
-                  Text(
-                    'File Selected:',
-                    style: TextStyle(
-                      fontSize: 16,
-                      color: Colors.grey[700],
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: 5),
-                  Text(
-                    filePath!,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 14, color: Colors.black87),
-                  ),
-                  const SizedBox(height: 20),
-                  const Text(
-                    'Processing vocals... Please wait!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(fontSize: 14, color: Colors.deepPurple),
-                  ),
-                ],
-              ),
-            if (filePath == null)
-              const Icon(
-                Icons.music_note,
-                color: Colors.black,
-                size: 100,
-              ),
+            const SizedBox(height: 20),
+            ElevatedButton(
+              onPressed: saveSong,
+              child: const Text('Save Song'),
+            ),
+            const SizedBox(height: 20),
+            if (audioFilePath != null)
+            Text('Selected Audio: $audioFilePath'),
+            if (coverImagePath != null)
+              Text('Selected Cover Image: $coverImagePath'),
           ],
         ),
       ),
