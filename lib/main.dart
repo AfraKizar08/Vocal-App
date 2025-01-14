@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart'; // Import Riverpod
 import 'pages/home_page.dart' as home; // Use an alias for home_page.dart
 import 'pages/profile_page.dart';
 import 'pages/search_page.dart';
+import 'pages/favourites_page.dart';
 import 'pages/upload_page.dart';
 import 'pages/playlist_page.dart';
 import 'pages/signup_page.dart'; // Import the login page
@@ -10,7 +12,11 @@ import 'package:firebase_core/firebase_core.dart';
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
-  runApp(VocalsOnlyMusicApp());
+  runApp(
+    ProviderScope( // Wrap your app in ProviderScope
+      child: VocalsOnlyMusicApp(),
+    ),
+  );
 }
 
 class VocalsOnlyMusicApp extends StatelessWidget {
@@ -55,6 +61,7 @@ class _MainScreenState extends State<MainScreen> {
     SearchPage(),
     UploadPage(),
     PlaylistPage(),
+    FavouritesPage(),
     ProfilePage(),
   ];
 
@@ -87,6 +94,10 @@ class _MainScreenState extends State<MainScreen> {
           BottomNavigationBarItem(
             icon: Icon(Icons.playlist_play),
             label: 'Playlists',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favourites',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person),
