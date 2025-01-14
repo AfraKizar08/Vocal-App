@@ -4,7 +4,7 @@ import 'pages/profile_page.dart';
 import 'pages/search_page.dart';
 import 'pages/upload_page.dart';
 import 'pages/playlist_page.dart';
-import 'pages/login_page.dart'; // Import the login page
+import 'pages/signup_page.dart'; // Import the login page
 import 'package:firebase_core/firebase_core.dart';
 
 void main() async {
@@ -35,7 +35,7 @@ class VocalsOnlyMusicApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: LoginPage(), // Set the login page as the initial screen
+      home: SignupPage(), // Set the login page as the initial screen
       debugShowCheckedModeBanner: false,
     );
   }
