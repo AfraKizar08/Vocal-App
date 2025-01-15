@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
 
-
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
 
@@ -12,7 +11,7 @@ class HomePage extends StatelessWidget {
         title: const Align(
           alignment: Alignment.centerLeft,
           child: Text(
-            'Vocals Only Music',
+            'Vocalsify',
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
         ),
@@ -30,7 +29,7 @@ class HomePage extends StatelessWidget {
                   height: 200,
                   decoration: BoxDecoration(
                     gradient: LinearGradient(
-                      colors: [Colors.black, Colors.green],
+                      colors: [Colors.black12, Colors.green],
                       begin: Alignment.topLeft,
                       end: Alignment.bottomRight,
                     ),
@@ -106,19 +105,19 @@ class HomePage extends StatelessWidget {
                       scrollDirection: Axis.horizontal,
                       children: [
                         TrendingCard(
-                          title: 'Vocal Bliss',
-                          artist: 'Lily Grace',
-                          image: 'assets/vocal_bliss.jpg',
+                          title: 'Arabian Night',
+                          artist: 'Will Smith',
+                          image: 'assets/arabnight.jpg',
                         ),
                         TrendingCard(
-                          title: 'Harmonic Melody',
-                          artist: 'The Chord Crew',
-                          image: 'assets/harmonic_melody.jpg',
+                          title: 'Tere Bin',
+                          artist: 'Wahaj Ali',
+                          image: 'assets/terebin.jpg',
                         ),
                         TrendingCard(
-                          title: 'Pure Acapella',
-                          artist: 'Voices Unplugged',
-                          image: 'assets/pure_acapella.jpg',
+                          title: 'Dawasak Ewi',
+                          artist: 'Piyath Rajapaksha',
+                          image: 'assets/dawasak.jpg',
                         ),
                       ],
                     ),
@@ -137,29 +136,30 @@ class HomePage extends StatelessWidget {
                   const Text(
                     'Recent Tracks',
                     style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
-                        color: Colors.red ),
+                      fontSize: 20,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.red,
+                    ),
                   ),
                   const SizedBox(height: 10),
                   // Inside the Recent Tracks Section
                   MusicCard(
-                    title: 'Acoustic Vibes',
-                    subtitle: 'Artist: John Doe',
-                    songPath: 'path/to/acoustic_vibes.mp3', // Replace with actual path
-                    coverImage: 'assets/acoustic_vibes_cover.jpg', // Replace with actual cover image
+                    title: 'Arabian Vibes',
+                    subtitle: 'Artist: Maher Zain',
+                    songPath: 'path/to/arabian_vibes.mp3', //
+                    coverImage: 'assets/maher.jpg', // Replace with actual cover image
                   ),
                   MusicCard(
-                    title: 'Melody Vocals',
-                    subtitle: 'Artist: Jane Smith',
-                    songPath: 'path/to/melody_vocals.mp3', // Replace with actual path
-                    coverImage: 'assets/melody_vocals_cover.jpg', // Replace with actual cover image
+                    title: 'Hindi Vocals',
+                    subtitle: 'Artist: Atif Aslam',
+                    songPath: 'path/to/atif_vocals.mp3', // Replace with actual path
+                    coverImage: 'assets/atif.jpg', // Replace with actual cover image
                   ),
                   MusicCard(
                     title: 'Harmonic Bliss',
-                    subtitle: 'Artist: The Vocal Group',
+                    subtitle: 'Artist: One Direction',
                     songPath: 'path/to/harmonic_bliss.mp3', // Replace with actual path
-                    coverImage: 'assets/harmonic_bliss_cover.jpg', // Replace with actual cover image
+                    coverImage: 'assets/onedirection.jpg', // Replace with actual cover image
                   ),
                 ],
               ),
@@ -249,8 +249,8 @@ class _MusicCardState extends State<MusicCard> {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: CircleAvatar(
+          backgroundImage: AssetImage(widget.coverImage), // Display cover image
           backgroundColor: Colors.green,
-          child: const Icon(Icons.music_note, color: Colors.white),
         ),
         title: Text(
           widget.title,

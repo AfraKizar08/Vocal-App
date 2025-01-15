@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'login_page.dart'; // Import LoginPage
-import '../main.dart'; // Import MainScreen for navigation after signup
+import 'login_page.dart';
+import 'package:vocal_app/widgets/audio_player_widget.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -38,7 +38,13 @@ class SignupPage extends StatelessWidget {
         );
         Navigator.pushReplacement(
           context,
-          MaterialPageRoute(builder: (context) => const MainScreen()),
+          MaterialPageRoute(
+            builder: (context) => MusicPlayer(
+              name: 'Artist Name',
+              image: 'assets/images/default.png',
+              songName: 'Sample Song',
+            ),
+          ),
         );
       } catch (e) {
         showDialog(
@@ -145,7 +151,8 @@ class SignupPage extends StatelessWidget {
                       onPressed: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const LoginPage()),
+                          MaterialPageRoute(
+                              builder: (context) => const LoginPage()),
                         );
                       },
                       child: const Text(

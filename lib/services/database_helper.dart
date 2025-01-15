@@ -1,3 +1,4 @@
+// lib/services/database_helper.dart
 import 'package:sqflite/sqflite.dart';
 import 'package:path/path.dart';
 
@@ -21,7 +22,7 @@ class DatabaseHelper {
       path,
       version: 1,
       onCreate: (db, version) {
-        return db.execute(
+        db.execute(
           'CREATE TABLE songs(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, artist TEXT, filepath TEXT, coverImage TEXT)',
         );
       },
@@ -43,3 +44,4 @@ class DatabaseHelper {
     await db.delete('songs', where: 'id = ?', whereArgs: [id]);
   }
 }
+

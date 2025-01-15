@@ -6,8 +6,8 @@ import 'pages/search_page.dart';
 import 'pages/favourites_page.dart';
 import 'pages/upload_page.dart';
 import 'pages/playlist_page.dart';
-import 'pages/signup_page.dart'; // Import the login page
 import 'package:firebase_core/firebase_core.dart';
+import 'pages/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -41,7 +41,7 @@ class VocalsOnlyMusicApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      home: SignupPage(), // Set the login page as the initial screen
+      home: SplashScreen(), // Set the login page as the initial screen
       debugShowCheckedModeBanner: false,
     );
   }

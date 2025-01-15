@@ -46,7 +46,7 @@ class HelpAndSupportPage extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.phone, color: Colors.deepPurple),
                     title: const Text(
-                      'Phone: +1 234 567 890',
+                      'Phone: +94 773211190',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                     subtitle: const Text('Available Monday to Friday, 9 AM - 6 PM'),
@@ -55,47 +55,16 @@ class HelpAndSupportPage extends StatelessWidget {
                   ListTile(
                     leading: const Icon(Icons.email, color: Colors.deepPurple),
                     title: const Text(
-                      'Email: support@example.com',
+                      'Email: support@vocalsify.com',
                       style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
                     ),
                     subtitle: const Text('We reply within 24 hours'),
-                  ),
-                  const Divider(),
-                  ListTile(
-                    leading: const Icon(Icons.chat, color: Colors.deepPurple),
-                    title: const Text(
-                      'Live Chat',
-                      style: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
-                    ),
-                    subtitle: const Text('Chat with our support agents'),
                   ),
                 ],
               ),
             ),
 
             const SizedBox(height: 30),
-
-            // Contact Support Button
-            ElevatedButton(
-              onPressed: () {
-                // Implement contact form or chat feature here
-                ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Contacting Support')));
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.deepPurple,
-                padding: const EdgeInsets.symmetric(vertical: 15),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
-              ),
-              child: const Text(
-                'Contact Support',
-                style: TextStyle(fontSize: 18, color: Colors.white),
-              ),
-            ),
-
-            const SizedBox(height: 40),
 
             // Additional Information Section
             const Text(
@@ -108,12 +77,10 @@ class HelpAndSupportPage extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             const Text(
-              'For urgent requests, please call us directly. Otherwise, you can send an email or use the live chat feature for quicker responses.',
+              'For urgent requests, please call us directly. Otherwise, you can send an email for quicker responses.',
               style: TextStyle(fontSize: 16, color: Colors.black54),
             ),
             const SizedBox(height: 20),
-
-
           ],
         ),
       ),

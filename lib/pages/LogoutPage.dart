@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
+import 'signup_page.dart'; // Import your LoginPage
 
 class LogoutPage extends StatelessWidget {
   const LogoutPage({Key? key}) : super(key: key);
@@ -44,11 +46,17 @@ class LogoutPage extends StatelessWidget {
 
             // Logout Button
             ElevatedButton(
-              onPressed: () {
+              onPressed: () async {
                 // Implement logout functionality here
+                await FirebaseAuth.instance.signOut(); // Sign out from Firebase
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Successfully logged out!')));
-                Navigator.pop(context); // Navigate back to login page
+
+                // Navigate to the Login Page
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => const SignupPage()),
+                );
               },
               style: ElevatedButton.styleFrom(
                 backgroundColor: Colors.deepPurple,

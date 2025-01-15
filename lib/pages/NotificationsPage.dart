@@ -8,8 +8,7 @@ class NotificationsPage extends StatefulWidget {
 }
 
 class _NotificationsPageState extends State<NotificationsPage> {
-  bool _emailNotifications = true;
-  bool _pushNotifications = false;
+  bool _pushNotifications = false; // Removed email notifications
 
   @override
   Widget build(BuildContext context) {
@@ -45,37 +44,6 @@ class _NotificationsPageState extends State<NotificationsPage> {
               ),
             ),
             const SizedBox(height: 30),
-
-            // Email Notifications Switch
-            Card(
-              elevation: 5,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: SwitchListTile(
-                tileColor: Colors.deepPurple.withOpacity(0.1),
-                title: const Text(
-                  'Email Notifications',
-                  style: TextStyle(fontSize: 18, color: Colors.black87),
-                ),
-                subtitle: const Text(
-                  'Get notified via email for important updates.',
-                  style: TextStyle(fontSize: 14, color: Colors.black54),
-                ),
-                value: _emailNotifications,
-                onChanged: (value) {
-                  setState(() {
-                    _emailNotifications = value;
-                  });
-                },
-                secondary: const Icon(
-                  Icons.email,
-                  color: Colors.deepPurple,
-                ),
-              ),
-            ),
-
-            const SizedBox(height: 20),
 
             // Push Notifications Switch
             Card(

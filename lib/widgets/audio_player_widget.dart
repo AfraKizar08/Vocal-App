@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
-import 'package:marquee/marquee.dart';
 
 class MusicPlayer extends StatefulWidget {
   final String name;
@@ -20,24 +19,32 @@ class MusicPlayer extends StatefulWidget {
 
 class _MusicPlayerState extends State<MusicPlayer> {
   late final AudioPlayer _audioPlayer;
-  Duration _duration = const Duration();
-  Duration _position = const Duration();
+  Duration _duration = Duration.zero;
+  Duration _position = Duration.zero;
   bool isPlaying = false;
 
   @override
   void initState() {
     super.initState();
     _audioPlayer = AudioPlayer();
-    _audioPlayer.onDurationChanged.listen((Duration d) {
+
+    _audioPlayer.onDurationChanged.listen((duration) {
       setState(() {
-        _duration = d;
+        _duration = duration;
       });
     });
-    _audioPlayer.onPositionChanged.listen((Duration p) {
+
+    _audioPlayer.onPositionChanged.listen((position) {
       setState(() {
-        _position = p;
+        _position = position;
       });
     });
+
+    _playAudio();
+  }
+
+  Future<void> _playAudio() async {
+    await _audioPlayer.play(DeviceFileSource(widget.songName));
   }
 
   @override
@@ -50,7 +57,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
     if (isPlaying) {
       await _audioPlayer.pause();
     } else {
-      await _audioPlayer.play(DeviceFileSource(widget.songName));
+      await _playAudio();
     }
     setState(() {
       isPlaying = !isPlaying;
@@ -74,106 +81,64 @@ class _MusicPlayerState extends State<MusicPlayer> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.arrow_back_ios, color: Colors.white),
-                    onPressed: () {
-                      Navigator.pop(context);
-                    },
+            // Cover Image
+            Expanded(
+              child: Container(
+                decoration: BoxDecoration(
+                  image: DecorationImage(
+                    image: AssetImage(widget.image),
+                    fit: BoxFit.cover,
                   ),
-                  Column(
-                    children: [
-                      const Text(
-                        "PLAYING FROM ARTIST",
-                        style: TextStyle(color: Colors.white, fontSize: 12),
+                ),
+                child: Container(
+                  color: Colors.black54, // Overlay color
+                  child: Center(
+                    child: Text(
+                      widget.name,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 24,
+                        fontWeight: FontWeight.bold,
                       ),
-                      Text(
-                        widget.name,
-                        style: const TextStyle(color: Colors.white, fontSize: 15),
-                      ),
-                    ],
+                    ),
                   ),
-                  IconButton(
-                    icon: const Icon(Icons.more_vert_sharp, color: Colors.white),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(20.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(15),
-                child: Image.asset(widget.image),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width - 40,
-                child: Marquee(
-                  text: widget.songName,
-                  style: const TextStyle(color: Colors.white, fontSize: 20),
-                  scrollAxis: Axis.horizontal,
-                  blankSpace: 200,
-                  velocity: 30.0,
                 ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Slider(
-                value: _position.inSeconds.toDouble(),
-                min: 0,
-                max: _duration.inSeconds.toDouble(),
-                onChanged: (value) async {
-                  await _audioPlayer.seek(Duration(seconds: value.toInt()));
-                },
-              ),
+            // Slider
+            Slider(
+              value: _position.inSeconds.toDouble().clamp(0.0, _duration.inSeconds.toDouble()),
+              min: 0.0,
+              max: _duration.inSeconds.toDouble() > 0 ? _duration.inSeconds.toDouble() : 1.0,
+              onChanged: (value) async {
+                await _audioPlayer.seek(Duration(seconds: value.toInt()));
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    "${_position.inMinutes}:${(_position.inSeconds % 60).toString().padLeft(2, '0')}",
-                    style: const TextStyle(color: Colors.white),
+            // Controls
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                IconButton(
+                  icon: const Icon(Icons.skip_previous, color: Colors.white),
+                  onPressed: () {
+                    // Handle previous track
+                  },
+                ),
+                IconButton(
+                  icon: Icon(
+                    isPlaying ? Icons.pause : Icons.play_arrow,
+                    color: Colors.white,
+                    size: 40,
                   ),
-                  Text(
-                    "${_duration.inMinutes}:${(_duration.inSeconds % 60).toString().padLeft(2, '0')}",
-                    style: const TextStyle(color: Colors.white),
-                  ),
-                ],
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.only(bottom: 20.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  IconButton(
-                    icon: const Icon(Icons.skip_previous, color: Colors.white),
-                    onPressed: () {},
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      isPlaying ? Icons.pause : Icons.play_arrow,
-                      color: Colors.white,
-                      size: 40,
-                    ),
-                    onPressed: playPause,
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.skip_next, color: Colors.white),
-                    onPressed: () {},
-                  ),
-                ],
-              ),
+                  onPressed: playPause,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.skip_next, color: Colors.white),
+                  onPressed: () {
+                    // Handle next track
+                  },
+                ),
+              ],
             ),
           ],
         ),

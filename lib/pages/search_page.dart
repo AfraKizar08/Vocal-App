@@ -40,7 +40,7 @@ class SearchPage extends StatelessWidget {
 
             // Trending Section
             const Text(
-              'Trending Searches',
+              'Category Searches',
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
@@ -52,12 +52,12 @@ class SearchPage extends StatelessWidget {
               spacing: 8.0,
               runSpacing: 8.0,
               children: const [
-                TrendingChip(label: 'Acoustic Vibes'),
-                TrendingChip(label: 'Vocal Bliss'),
-                TrendingChip(label: 'Melody Vocals'),
-                TrendingChip(label: 'Pure Acapella'),
-                TrendingChip(label: 'Harmonic Melody'),
-                TrendingChip(label: 'John Doe Hits'),
+                TrendingChip(label: 'Shreya Goshal'),
+                TrendingChip(label: 'Atif Aslam'),
+                TrendingChip(label: 'Maher Zain'),
+                TrendingChip(label: 'Top Hindi'),
+                TrendingChip(label: 'Arabian Night'),
+                TrendingChip(label: 'Tamil vocal'),
               ],
             ),
             const SizedBox(height: 20),

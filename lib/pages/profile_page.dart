@@ -82,7 +82,6 @@ class _ProfilePageState extends State<ProfilePage> {
                 );
               },
             ),
-
             const Divider(color: Colors.grey),
             _buildSettingOption(
               icon: Icons.notifications,
@@ -169,7 +168,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: ListTile(
         leading: CircleAvatar(
           backgroundColor: Colors.deepPurple.withOpacity(0.2),
-          child: Icon(icon, color: Colors.red),
+          child: Icon(icon, color: Colors.black),
         ),
         title: Text(
           title,
@@ -192,16 +191,10 @@ class _ProfilePageState extends State<ProfilePage> {
           'Your Profile',
           style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
         ),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.settings, color: Colors.white),
-            onPressed: _openSettingsBottomSheet,
-          ),
-        ],
       ),
-      body: Center(
+      body: SingleChildScrollView( // Allow scrolling for the entire body
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.start,
           children: [
             const CircleAvatar(
               radius: 70,
@@ -209,7 +202,7 @@ class _ProfilePageState extends State<ProfilePage> {
               child: CircleAvatar(
                 radius: 65,
                 backgroundColor: Colors.white,
-                child: Icon(Icons.person, size: 70, color: Colors.deepPurple),
+                child: Icon(Icons.person, size: 60, color: Colors.deepPurple),
               ),
             ),
             const SizedBox(height: 20),
@@ -230,6 +223,91 @@ class _ProfilePageState extends State<ProfilePage> {
             const Text(
               '+1 234 567 890',
               style: TextStyle(fontSize: 16, color: Colors.grey),
+            ),
+            const SizedBox(height: 20),
+            // Settings Section
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 16.0),
+              child: Text(
+                'Settings',
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.black,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            _buildSettingOption(
+              icon: Icons.edit,
+              title: 'Edit Profile',
+              subtitle: 'Update your personal information',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const EditProfilePage()),
+                );
+              },
+            ),
+            const Divider(color: Colors.grey),
+            _buildSettingOption(
+              icon: Icons.notifications,
+              title: 'Notifications',
+              subtitle: 'Manage your notifications',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const NotificationsPage()),
+                );
+              },
+            ),
+            const Divider(color: Colors.grey),
+            _buildSettingOption(
+              icon: Icons.lock,
+              title: 'Privacy Settings',
+              subtitle: 'Adjust your privacy preferences',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const PrivacySettingsPage()),
+                );
+              },
+            ),
+            const Divider(color: Colors.grey),
+            _buildSettingOption(
+              icon: Icons.color_lens,
+              title: 'Theme',
+              subtitle: 'Switch between light and dark modes',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const ThemePage()),
+                );
+              },
+            ),
+            const Divider(color: Colors.grey),
+            _buildSettingOption(
+              icon: Icons.help_outline,
+              title: 'Help & Support',
+              subtitle: 'Get assistance or contact support',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const HelpAndSupportPage()),
+                );
+              },
+            ),
+            const Divider(color: Colors.grey),
+            _buildSettingOption(
+              icon: Icons.logout,
+              title: 'Logout',
+              subtitle: 'Sign out of your account',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const LogoutPage()),
+                );
+              },
             ),
           ],
         ),
