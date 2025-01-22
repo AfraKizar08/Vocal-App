@@ -59,7 +59,7 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     home.HomePage(), // Use the alias here
     SearchPage(),
-    AddSongPage(),
+    UploadSong(),
     PlaylistPage(),
     FavouritesPage(),
     ProfilePage(),

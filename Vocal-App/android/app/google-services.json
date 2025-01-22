@@ -1,0 +1,30 @@
+
+{
+  "project_info": {
+    "project_number": "1054199196430",
+    "project_id": "vocalsify-app",
+    "storage_bucket": "vocalsify-app.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1054199196430:android:a5f6dc9d0513810d4f055f",
+        "android_client_info": {
+          "package_name": "com.example.vocal_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAwhbsdq5joZ64BGuDZfTzsooUD-oRsRKE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

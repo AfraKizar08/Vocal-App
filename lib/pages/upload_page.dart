@@ -1,17 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:vocal_app/services/database_helper.dart';
+import 'package:path/path.dart';
 
-class AddSongPage extends StatefulWidget {
+class UploadSong extends StatefulWidget {
+  const UploadSong({super.key});
+
   @override
-  _AddSongPageState createState() => _AddSongPageState();
+  State<UploadSong> createState() => _UploadSongState();
 }
 
-class _AddSongPageState extends State<AddSongPage> {
-  String? audioFilePath;
-  String? coverImagePath;
+class _UploadSongState extends State<UploadSong> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController artistController = TextEditingController();
+  String? audioFilePath;
+  String? coverImagePath;
+
+  @override
+  void dispose() {
+    titleController.dispose();
+    artistController.dispose();
+    super.dispose();
+  }
 
   Future<void> selectAudioFile() async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
@@ -39,12 +49,15 @@ class _AddSongPageState extends State<AddSongPage> {
 
   Future<void> saveSong() async {
     if (audioFilePath != null && coverImagePath != null) {
+      // Save to local database
       await DatabaseHelper().insertSong({
         'title': titleController.text,
         'artist': artistController.text,
         'filepath': audioFilePath,
         'coverImage': coverImagePath,
       });
+
+      // Optionally, navigate back to the music list
       Navigator.pop(context);
     } else {
       // Show an error message
@@ -58,7 +71,7 @@ class _AddSongPageState extends State<AddSongPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Add Song'),
+        title: const Text('Upload Song'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -89,7 +102,7 @@ class _AddSongPageState extends State<AddSongPage> {
             ),
             const SizedBox(height: 20),
             if (audioFilePath != null)
-            Text('Selected Audio: $audioFilePath'),
+              Text('Selected Audio: $audioFilePath'),
             if (coverImagePath != null)
               Text('Selected Cover Image: $coverImagePath'),
           ],
