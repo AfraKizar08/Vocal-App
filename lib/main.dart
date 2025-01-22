@@ -8,6 +8,7 @@ import 'pages/upload_page.dart';
 import 'pages/playlist_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'pages/splash_screen.dart';
+import 'providers/theme_notifier.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,12 +20,18 @@ void main() async {
   );
 }
 
-class VocalsOnlyMusicApp extends StatelessWidget {
+class VocalsOnlyMusicApp extends ConsumerWidget {
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final themeNotifier = ref.watch(themeProvider);
     return MaterialApp(
       title: 'Vocals Only Music',
-      theme: ThemeData(
+      theme:themeNotifier.isDarkMode
+          ?ThemeData.dark()
+
+
+          : ThemeData(
         colorScheme: ColorScheme.fromSeed(
           seedColor: Colors.black,
           brightness: Brightness.light,

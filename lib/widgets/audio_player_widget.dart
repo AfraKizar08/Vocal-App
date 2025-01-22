@@ -6,7 +6,7 @@ class MusicPlayer extends StatefulWidget {
   final String image;
   final String songName;
 
-  const MusicPlayer({
+  const MusicPlayer(song, {
     Key? key,
     required this.name,
     required this.image,

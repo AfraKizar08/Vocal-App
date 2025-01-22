@@ -58,10 +58,10 @@ class _UploadSongState extends State<UploadSong> {
       });
 
       // Optionally, navigate back to the music list
-      Navigator.pop(context);
+      Navigator.pop(context as BuildContext);
     } else {
       // Show an error message
-      ScaffoldMessenger.of(context).showSnackBar(
+      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
         const SnackBar(content: Text('Please select audio and cover image.')),
       );
     }

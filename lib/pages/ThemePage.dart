@@ -1,14 +1,23 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vocal_app/providers/theme_notifier.dart'; // Import the ThemeNotifier
 
-class ThemePage extends StatefulWidget {
+class ThemePage extends ConsumerStatefulWidget {
   const ThemePage({Key? key}) : super(key: key);
 
   @override
   _ThemePageState createState() => _ThemePageState();
 }
 
-class _ThemePageState extends State<ThemePage> {
-  bool _isDarkMode = false;
+class _ThemePageState extends ConsumerState<ThemePage> {
+  bool _isDarkMode = false; // Local variable to hold the theme state
+
+  @override
+  void initState() {
+    super.initState();
+    // Get the current theme state from the provider
+    _isDarkMode = ref.read(themeProvider).isDarkMode; // Use ref instead of context
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -64,16 +73,8 @@ class _ThemePageState extends State<ThemePage> {
                 value: _isDarkMode,
                 onChanged: (value) {
                   setState(() {
-                    _isDarkMode = value;
+                    _isDarkMode = value; // Update local variable only
                   });
-                  // You can apply the theme change here
-                  if (_isDarkMode) {
-                    // Apply dark theme
-                    // Example: ThemeData.dark()
-                  } else {
-                    // Apply light theme
-                    // Example: ThemeData.light()
-                  }
                 },
                 secondary: Icon(
                   _isDarkMode ? Icons.dark_mode : Icons.light_mode,
@@ -88,6 +89,7 @@ class _ThemePageState extends State<ThemePage> {
             ElevatedButton(
               onPressed: () {
                 // Save theme settings
+                ref.read(themeProvider).setTheme(_isDarkMode); // Apply the saved theme
                 ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Theme settings updated!')));
                 Navigator.pop(context);

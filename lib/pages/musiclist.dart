@@ -1,7 +1,11 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:vocal_app/pages/upload_page.dart';
 import '../services/database_helper.dart';
+import '../widgets/audio_player_widget.dart';
 
 class MusicList extends StatefulWidget {
   const MusicList({super.key});
@@ -68,7 +72,10 @@ class _MusicListState extends State<MusicList> {
                       MaterialPageRoute(
                         builder: (context) => MusicPlayer(
                           song['title'], // Use the title from the database
-                          song['filepath'], // Use the file path from the database
+                          name: song['artist'],
+                          image:song['coverImage'],
+                          songName: song['filepath'],
+
                         ),
                       ),
                     );
@@ -93,9 +100,11 @@ class _MusicListState extends State<MusicList> {
         backgroundColor: Color(0xffD9D9D9),
         backgroundImage: coverImagePath.isNotEmpty
             ? FileImage(File(coverImagePath)) // Load the cover image
-            : const AssetImage('assets/default_cover.png') as ImageProvider, // Default image if none
+            : const AssetImage('assets/default_cover.png')
+        as ImageProvider, // Default image if none
         child: coverImagePath.isEmpty
-            ? const Icon(Icons.music_note, size: 25, color: Color.fromARGB(255, 221, 46, 33))
+            ? const Icon(Icons.music_note,
+            size: 25, color: Color.fromARGB(255, 221, 46, 33))
             : null,
       ),
       title: Text(songName),
