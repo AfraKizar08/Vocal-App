@@ -44,7 +44,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
   }
 
   Future<void> _playAudio() async {
-    await _audioPlayer.play(DeviceFileSource(widget.songName));
+    await _audioPlayer.play(AssetSource(widget.songName)); // Use AssetSource for assets
   }
 
   @override

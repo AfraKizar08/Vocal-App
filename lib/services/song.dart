@@ -15,10 +15,10 @@ class Song {
 
 List<Song> assetSongs = [
   Song(
-    title: 'Tum Hi Ho',
-    artist: 'Arjit Singh',
-    filePath: 'assets/songs/song1.mp3',
-    coverImage: 'assets/images/cover1.jpg',
+    title: 'Channa Meraya',
+    artist: 'Atif Aslam',
+    filePath: 'assets/songs/channameraya.mp3',
+    coverImage: 'assets/images/atif.jpg',
   ),
   Song(
     title: 'Song 2',

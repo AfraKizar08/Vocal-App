@@ -13,7 +13,7 @@ class SplashScreen extends StatelessWidget {
       body: Center(
         child: FlutterSplashScreen.gif(
           backgroundColor: Pallete.transparentColor,
-          gifPath: 'assets/splash.gif', // Path to your GIF
+          gifPath: 'assets/images/splash.gif', // Path to your GIF
           gifWidth: MediaQuery.of(context).size.width, // Full width
           gifHeight: MediaQuery.of(context).size.height, // Full height
           duration: const Duration(seconds: 10, milliseconds: 500),

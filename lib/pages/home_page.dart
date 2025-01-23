@@ -107,17 +107,17 @@ class HomePage extends StatelessWidget {
                         TrendingCard(
                           title: 'Arabian Night',
                           artist: 'Will Smith',
-                          image: 'assets/arabnight.jpg',
+                          image: 'assets/images/arabnight.jpg',
                         ),
                         TrendingCard(
                           title: 'Tere Bin',
                           artist: 'Wahaj Ali',
-                          image: 'assets/terebin.jpg',
+                          image: 'assets/images/terebin.jpg',
                         ),
                         TrendingCard(
                           title: 'Dawasak Ewi',
                           artist: 'Piyath Rajapaksha',
-                          image: 'assets/dawasak.jpg',
+                          image: 'assets/images/dawasak.jpg',
                         ),
                       ],
                     ),
@@ -147,19 +147,19 @@ class HomePage extends StatelessWidget {
                     title: 'Arabian Vibes',
                     subtitle: 'Artist: Maher Zain',
                     songPath: 'path/to/arabian_vibes.mp3', //
-                    coverImage: 'assets/maher.jpg', // Replace with actual cover image
+                    coverImage: 'assets/images/maher.jpg', // Replace with actual cover image
                   ),
                   MusicCard(
-                    title: 'Hindi Vocals',
+                    title: 'Channa Meraya',
                     subtitle: 'Artist: Atif Aslam',
-                    songPath: 'path/to/atif_vocals.mp3', // Replace with actual path
-                    coverImage: 'assets/atif.jpg', // Replace with actual cover image
+                    songPath: 'assets/songs/channameraya.mp3', // Replace with actual path
+                    coverImage: 'assets/images/atif.jpg', // Replace with actual cover image
                   ),
                   MusicCard(
                     title: 'Harmonic Bliss',
                     subtitle: 'Artist: One Direction',
                     songPath: 'path/to/harmonic_bliss.mp3', // Replace with actual path
-                    coverImage: 'assets/onedirection.jpg', // Replace with actual cover image
+                    coverImage: 'assets/images/onedirection.jpg', // Replace with actual cover image
                   ),
                 ],
               ),

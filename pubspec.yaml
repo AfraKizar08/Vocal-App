@@ -84,6 +84,16 @@ flutter:
       - assets/images/terebin.jpg
       - assets/images/dawasak.jpg
       - assets/images/splash.gif
+      - assets/songs/AeDilMushkil.mp3
+      - assets/songs/channameraya.mp3
+      - assets/songs/Husn.mp3
+      - assets/songs/Inthestars.mp3
+      - assets/songs/jhol.mp3
+      - assets/songs/little_do_you_know.mp3
+      - assets/songs/lovely.mp3
+      - assets/songs/Tum Hi Ho.mp3
+      - assets/songs/Zara Zara.mp3
+
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
