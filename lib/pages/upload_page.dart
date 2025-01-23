@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:vocal_app/services/database_helper.dart';
@@ -16,6 +18,7 @@ class _UploadSongState extends State<UploadSong> {
   String? audioFilePath;
   String? coverImagePath;
 
+
   @override
   void dispose() {
     titleController.dispose();
@@ -32,6 +35,10 @@ class _UploadSongState extends State<UploadSong> {
       setState(() {
         audioFilePath = result.files.single.path!;
       });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Selected Audio: ${result.files.single.name}')),
+      );
     }
   }
 
@@ -44,6 +51,9 @@ class _UploadSongState extends State<UploadSong> {
       setState(() {
         coverImagePath = result.files.single.path!;
       });
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Selected Cover Image: ${result.files.single.name}')),
+      );
     }
   }
 
@@ -60,8 +70,9 @@ class _UploadSongState extends State<UploadSong> {
       // Optionally, navigate back to the music list
 
       Navigator.push(
-          context,
-        MaterialPageRoute(builder: (context) => MusicList()), // Replace with your target screen
+        context,
+        MaterialPageRoute(builder: (context) =>
+            MusicList()), // Replace with your target screen
       );
     } else {
       // Show an error message
@@ -70,6 +81,19 @@ class _UploadSongState extends State<UploadSong> {
       );
     }
   }
+
+  Widget _buildSelectedFileCard(String title, String filePath) {
+    return Card(
+      elevation: 4,
+      margin: const EdgeInsets.symmetric(vertical: 10),
+      child: ListTile(
+        title: Text(title),
+        subtitle: Text(filePath),
+        trailing: const Icon(Icons.file_present, color: Colors.green),
+      ),
+    );
+  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -106,9 +130,29 @@ class _UploadSongState extends State<UploadSong> {
             ),
             const SizedBox(height: 20),
             if (audioFilePath != null)
-              Text('Selected Audio: $audioFilePath'),
+              Card(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: ListTile(
+                  leading: const Icon(Icons.audiotrack, color: Colors.green),
+                  title: Text('Selected Audio: ${titleController.text}'),
+                  subtitle: Text(audioFilePath!.split('/').last),
+                ),
+              ),
+
+            // Display selected cover image
             if (coverImagePath != null)
-              Text('Selected Cover Image: $coverImagePath'),
+              Column(
+                children: [
+                  Image.file(
+                    File(coverImagePath!),
+                    height: 100,
+                    width: 100,
+                    fit: BoxFit.cover,
+                  ),
+
+                ],
+              ),
+
           ],
         ),
       ),
