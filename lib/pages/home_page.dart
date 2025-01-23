@@ -267,7 +267,6 @@ class _MusicCardState extends State<MusicCard> {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MusicPlayer(
-                      'song placeholder',
                       name: widget.subtitle.split(': ')[1], // Extract artist name
                       image: widget.coverImage,
                       songName: widget.songPath,

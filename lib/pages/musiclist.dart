@@ -1,11 +1,9 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-
 import 'package:vocal_app/pages/upload_page.dart';
 import '../services/database_helper.dart';
 import '../widgets/audio_player_widget.dart';
+import '../services/song.dart'; // Import the asset songs
 
 class MusicList extends StatefulWidget {
   const MusicList({super.key});
@@ -61,21 +59,28 @@ class _MusicListState extends State<MusicList> {
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
+            // Combine database songs with asset songs
+            List<Map<String, dynamic>> combinedSongs = List.from(snapshot.data!);
+            combinedSongs.addAll(assetSongs.map((song) => {
+              'title': song.title,
+              'artist': song.artist,
+              'filepath': song.filePath,
+              'coverImage': song.coverImage,
+            }).toList());
+
             return ListView.builder(
-              itemCount: snapshot.data!.length,
+              itemCount: combinedSongs.length,
               itemBuilder: (context, index) {
-                final song = snapshot.data![index];
+                final song = combinedSongs[index];
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MusicPlayer(
-                          song['title'], // Use the title from the database
-                          name: song['artist'],
-                          image:song['coverImage'],
+                          name: song['artist'], // Use the artist from the database or asset
+                          image: song['coverImage'],
                           songName: song['filepath'],
-
                         ),
                       ),
                     );
@@ -100,8 +105,7 @@ class _MusicListState extends State<MusicList> {
         backgroundColor: Color(0xffD9D9D9),
         backgroundImage: coverImagePath.isNotEmpty
             ? FileImage(File(coverImagePath)) // Load the cover image
-            : const AssetImage('assets/default_cover.png')
-        as ImageProvider, // Default image if none
+            : const AssetImage('assets/images/top_50.jpeg') as ImageProvider, // Default image if none
         child: coverImagePath.isEmpty
             ? const Icon(Icons.music_note,
             size: 25, color: Color.fromARGB(255, 221, 46, 33))

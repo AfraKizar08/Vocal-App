@@ -6,7 +6,7 @@ class MusicPlayer extends StatefulWidget {
   final String image;
   final String songName;
 
-  const MusicPlayer(song, {
+  const MusicPlayer({
     Key? key,
     required this.name,
     required this.image,
@@ -67,49 +67,49 @@ class _MusicPlayerState extends State<MusicPlayer> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            colors: [
-              Colors.deepPurple.shade800.withOpacity(0.8),
-              Colors.black87.withOpacity(0.8),
-            ],
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-          ),
-        ),
+      backgroundColor: Colors.black,
+      body: SafeArea(
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             // Cover Image
-            Expanded(
-              child: Container(
-                decoration: BoxDecoration(
-                  image: DecorationImage(
-                    image: AssetImage(widget.image),
-                    fit: BoxFit.cover,
+            Container(
+              margin: const EdgeInsets.symmetric(vertical: 20),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black54,
+                    blurRadius: 20,
+                    offset: Offset(0, 10),
                   ),
-                ),
-                child: Container(
-                  color: Colors.black54, // Overlay color
-                  child: Center(
-                    child: Text(
-                      widget.name,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 24,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
+                ],
+                image: DecorationImage(
+                  image: AssetImage(widget.image),
+                  fit: BoxFit.cover,
                 ),
               ),
+              height: 300,
+              width: 300,
             ),
+            const SizedBox(height: 20),
+            // Song Name
+            Text(
+              widget.name,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 10),
             // Slider
             Slider(
               value: _position.inSeconds.toDouble().clamp(0.0, _duration.inSeconds.toDouble()),
               min: 0.0,
               max: _duration.inSeconds.toDouble() > 0 ? _duration.inSeconds.toDouble() : 1.0,
+              activeColor: Colors.deepPurple,
+              inactiveColor: Colors.grey,
               onChanged: (value) async {
                 await _audioPlayer.seek(Duration(seconds: value.toInt()));
               },
@@ -119,7 +119,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
                 IconButton(
-                  icon: const Icon(Icons.skip_previous, color: Colors.white),
+                  icon: const Icon(Icons.skip_previous, color: Colors.white, size: 30),
                   onPressed: () {
                     // Handle previous track
                   },
@@ -133,13 +133,29 @@ class _MusicPlayerState extends State<MusicPlayer> {
                   onPressed: playPause,
                 ),
                 IconButton(
-                  icon: const Icon(Icons.skip_next, color: Colors.white),
+                  icon: const Icon(Icons.skip_next, color: Colors.white, size: 30),
                   onPressed: () {
                     // Handle next track
                   },
                 ),
               ],
             ),
+            const SizedBox(height: 20),
+            // Additional UI Elements
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  _position.toString().split('.').first.substring(2),
+                  style: const TextStyle(color: Colors.white),
+                ),
+                Text(
+                  _duration.toString().split('.').first.substring(2),
+                  style: const TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
           ],
         ),
       ),

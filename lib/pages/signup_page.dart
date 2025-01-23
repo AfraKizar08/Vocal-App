@@ -40,12 +40,12 @@ class SignupPage extends StatelessWidget {
           context,
           MaterialPageRoute(
             builder: (context) => MusicPlayer(
-              'song placeholder',
-              name: 'Artist Name',
+              name: 'Artist Name', // Replace with actual artist name if available
               image: 'assets/images/default.png',
               songName: 'Sample Song',
             ),
           ),
+
         );
       } catch (e) {
         showDialog(
