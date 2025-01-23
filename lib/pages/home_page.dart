@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
+import 'package:vocal_app/services/database_helper.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -291,4 +292,34 @@ class _MusicCardState extends State<MusicCard> {
       ),
     );
   }
+}
+
+Future<List<Map<String, dynamic>>> getData() async {
+  return await DatabaseHelper().getSongs();
+}
+
+@override
+Widget build(BuildContext context) {
+  return FutureBuilder<List<Map<String, dynamic>>>(
+    future: getData(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else {
+        final songs = snapshot.data;
+        return ListView.builder(
+          itemCount: songs?.length,
+          itemBuilder: (context, index) {
+            final song = songs?[index];
+            return ListTile(
+              title: Text(song?['title']),
+              subtitle: Text(song?['artist']),
+            );
+          },
+        );
+      }
+    },
+  );
 }

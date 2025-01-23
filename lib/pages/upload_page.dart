@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:vocal_app/services/database_helper.dart';
-import 'package:path/path.dart';
+import 'package:vocal_app/pages/musiclist.dart';
 
 class UploadSong extends StatefulWidget {
   const UploadSong({super.key});
@@ -56,12 +56,16 @@ class _UploadSongState extends State<UploadSong> {
         'filepath': audioFilePath,
         'coverImage': coverImagePath,
       });
-
+      print("Song saved: ${titleController.text}"); // Debugging line
       // Optionally, navigate back to the music list
-      Navigator.pop(context as BuildContext);
+
+      Navigator.push(
+          context,
+        MaterialPageRoute(builder: (context) => MusicList()), // Replace with your target screen
+      );
     } else {
       // Show an error message
-      ScaffoldMessenger.of(context as BuildContext).showSnackBar(
+      ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please select audio and cover image.')),
       );
     }
