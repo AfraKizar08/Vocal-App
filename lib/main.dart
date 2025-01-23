@@ -9,6 +9,7 @@ import 'pages/playlist_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'pages/splash_screen.dart';
 import 'providers/theme_notifier.dart';
+import 'pages/musiclist.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -66,10 +67,11 @@ class _MainScreenState extends State<MainScreen> {
   final List<Widget> _pages = [
     home.HomePage(), // Use the alias here
     SearchPage(),
-    UploadSong(),
+    MusicList(),
     PlaylistPage(),
     FavouritesPage(),
     ProfilePage(),
+
   ];
 
   @override
@@ -96,7 +98,7 @@ class _MainScreenState extends State<MainScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.upload_file),
-            label: 'Upload',
+            label: 'Music List',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.playlist_play),
