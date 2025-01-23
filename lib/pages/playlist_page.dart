@@ -35,22 +35,22 @@ class PlaylistPage extends StatelessWidget {
             PlaylistCard(
               playlistName: 'Relaxing Vibes',
               trackCount: 15,
-              coverImage: 'assets/relaxing_vibes.jpeg',
+              coverImage: 'assets/images/relaxing_vibes.jpeg',
             ),
             PlaylistCard(
               playlistName: 'Workout Hits',
               trackCount: 20,
-              coverImage: 'assets/workout_hits.jpeg',
+              coverImage: 'assets/images/workout_hits.jpeg',
             ),
             PlaylistCard(
               playlistName: 'Chill Beats',
               trackCount: 10,
-              coverImage: 'assets/chill_beats.jpeg',
+              coverImage: 'assets/images/chill_beats.jpeg',
             ),
             PlaylistCard(
               playlistName: 'Top 50',
               trackCount: 50,
-              coverImage: 'assets/top_50.jpeg',
+              coverImage: 'assets/images/top_50.jpeg',
             ),
           ],
         ),

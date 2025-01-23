@@ -107,17 +107,17 @@ class HomePage extends StatelessWidget {
                         TrendingCard(
                           title: 'Arabian Night',
                           artist: 'Will Smith',
-                          image: 'assets/arabnight.jpg',
+                          image: 'assets/images/arabnight.jpg',
                         ),
                         TrendingCard(
                           title: 'Tere Bin',
                           artist: 'Wahaj Ali',
-                          image: 'assets/terebin.jpg',
+                          image: 'assets/images/terebin.jpg',
                         ),
                         TrendingCard(
                           title: 'Dawasak Ewi',
                           artist: 'Piyath Rajapaksha',
-                          image: 'assets/dawasak.jpg',
+                          image: 'assets/images/dawasak.jpg',
                         ),
                       ],
                     ),
