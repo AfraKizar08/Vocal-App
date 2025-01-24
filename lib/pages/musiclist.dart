@@ -14,90 +14,60 @@ class MusicList extends StatefulWidget {
 
 class _MusicListState extends State<MusicList> {
   Future<List<Map<String, dynamic>>> getData() async {
-    // Fetch songs from the local SQLite database
-    return await DatabaseHelper().getSongs();
+    return await DatabaseHelper().getSongs(); // Fetch database songs
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        elevation: 2,
-        title: Text(
-          'Music List',
-          style: TextStyle(
-            color: Colors.grey[800],
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
-        ),
-        backgroundColor: Color(0xffD2CEF6),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-      ),
-      // Upload song FAB button
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => const UploadSong()),
-          );
-        },
-        backgroundColor: Color(0xffD2CEF6),
-        child: const Icon(Icons.add),
-      ),
-      body: FutureBuilder<List<Map<String, dynamic>>>(
-        future: getData(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
-          } else {
-            // Combine database songs with asset songs
-            List<Map<String, dynamic>> combinedSongs = List.from(snapshot.data!);
-            combinedSongs.addAll(assetSongs.map((song) => {
-              'title': song.title,
-              'artist': song.artist,
-              'filepath': song.filePath,
-              'coverImage': song.coverImage,
-            }).toList());
+    return FutureBuilder<List<Map<String, dynamic>>>(
+      future: getData(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        } else {
+          List<Map<String, dynamic>> combinedSongs = List.from(snapshot.data!);
+          combinedSongs.addAll(assetSongs.map((song) =>
+          {
+            'title': song.title,
+            'artist': song.artist,
+            'filepath': song.filePath,
+            'coverImage': song.coverImage,
+          }));
 
-            return ListView.builder(
-              itemCount: combinedSongs.length,
-              itemBuilder: (context, index) {
-                final song = combinedSongs[index];
-                return GestureDetector(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => MusicPlayer(
-                          name: song['artist'], // Use the artist from the database or asset
-                          image: song['coverImage'],
-                          songName: song['filepath'],
-                        ),
-                      ),
-                    );
-                  },
-                  child: listSong(
-                    song['title'],
-                    song['artist'],
-                    song['coverImage'], // Get the cover image path
-                  ),
-                );
-              },
-            );
-          }
-        },
-      ),
+          return ListView.builder(
+            itemCount: combinedSongs.length,
+            itemBuilder: (context, index) {
+              final song = combinedSongs[index];
+              return GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) =>
+                          MusicPlayer(
+                            name: song['artist'],
+                            image: song['coverImage'],
+                            songName: song['filepath'],
+                            isAsset: song['filepath'].startsWith('assets/'),
+                          ),
+                    ),
+                  );
+                },
+                child: listSong(
+                  song['title'],
+                  song['artist'],
+                  song['coverImage'],
+                ),
+              );
+            },
+          );
+        }
+      },
     );
   }
+
 
   Widget listSong(String songName, String artistName, String coverImagePath) {
     return ListTile(
@@ -105,7 +75,8 @@ class _MusicListState extends State<MusicList> {
         backgroundColor: Color(0xffD9D9D9),
         backgroundImage: coverImagePath.isNotEmpty
             ? FileImage(File(coverImagePath)) // Load the cover image
-            : const AssetImage('assets/images/top_50.jpeg') as ImageProvider, // Default image if none
+            : const AssetImage('assets/images/top_50.jpeg') as ImageProvider,
+        // Default image if none
         child: coverImagePath.isEmpty
             ? const Icon(Icons.music_note,
             size: 25, color: Color.fromARGB(255, 221, 46, 33))

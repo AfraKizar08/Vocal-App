@@ -28,18 +28,19 @@ class _EditProfilePageState extends State<EditProfilePage> {
     _phoneController.text = prefs.getString('phone') ?? '';
   }
 
-  Future<void> _saveProfile() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    await prefs.setString('name', _nameController.text);
-    await prefs.setString('email', _emailController.text);
-    await prefs.setString('phone', _phoneController.text);
-
-    // Update Firebase user details
-    User? user = FirebaseAuth.instance.currentUser ;
+  void _saveProfile() async {
+    User? user = FirebaseAuth.instance.currentUser;
     if (user != null) {
-      await user.updateProfile(displayName: _nameController.text);
-      await user.reload();
+      await user.updateDisplayName(_nameController.text);
+      await user.updateEmail(_emailController.text);
+      await DatabaseHelper().updateUser({
+        'uid': user.uid,
+        'name': _nameController.text,
+        'email': _emailController.text,
+      });
     }
+
+
 
     // Update local database
     await DatabaseHelper().updateUser ({
