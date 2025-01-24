@@ -25,9 +25,6 @@ class DatabaseHelper {
         db.execute(
           'CREATE TABLE songs(id INTEGER PRIMARY KEY AUTOINCREMENT, title TEXT, artist TEXT, filepath TEXT, coverImage TEXT)',
         );
-        db.execute(
-          'CREATE TABLE users(uid TEXT PRIMARY KEY, name TEXT, email TEXT)',
-        );
       },
     );
   }
@@ -42,19 +39,8 @@ class DatabaseHelper {
     return await db.query('songs');
   }
 
-  Future<void> insertUser (Map<String, dynamic> user) async {
-    final db = await database;
-    await db.insert('users', user);
-  }
-
-  Future<void> updateUser (Map<String, dynamic> user) async {
-    final db = await database;
-    await db.update('users', user, where: 'uid = ?', whereArgs: [user['uid']]);
-  }
-
   Future<void> deleteSong(int id) async {
     final db = await database;
     await db.delete('songs', where: 'id = ?', whereArgs: [id]);
   }
 }
-

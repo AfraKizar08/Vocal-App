@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:vocal_app/services/database_helper.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 
 class EditProfilePage extends StatefulWidget {
   const EditProfilePage({Key? key}) : super(key: key);
@@ -33,21 +31,6 @@ class _EditProfilePageState extends State<EditProfilePage> {
     await prefs.setString('name', _nameController.text);
     await prefs.setString('email', _emailController.text);
     await prefs.setString('phone', _phoneController.text);
-
-    // Update Firebase user details
-    User? user = FirebaseAuth.instance.currentUser ;
-    if (user != null) {
-      await user.updateProfile(displayName: _nameController.text);
-      await user.reload();
-    }
-
-    // Update local database
-    await DatabaseHelper().updateUser ({
-      'uid': user!.uid,
-      'name': _nameController.text,
-      'email': _emailController.text,
-    });
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Profile updated!')),
     );

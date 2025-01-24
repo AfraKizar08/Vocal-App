@@ -26,15 +26,11 @@ class _MusicListState extends State<MusicList> {
         elevation: 2,
         title: Text(
           'Music List',
-          style: TextStyle(
-            color: Colors.grey[800],
-            fontSize: 20,
-            fontWeight: FontWeight.bold,
-          ),
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
-        backgroundColor: Color(0xffD2CEF6),
+        backgroundColor: Color(0xff000000),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white),
+          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () {
             Navigator.pop(context);
           },
@@ -48,7 +44,7 @@ class _MusicListState extends State<MusicList> {
             MaterialPageRoute(builder: (context) => const UploadSong()),
           );
         },
-        backgroundColor: Color(0xffD2CEF6),
+        backgroundColor: Colors.green,
         child: const Icon(Icons.add),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
