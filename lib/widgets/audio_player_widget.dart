@@ -41,15 +41,6 @@ class _MusicPlayerState extends State<MusicPlayer> {
         _duration = duration;
       });
     });
-
-    _audioPlayer.onPlayerComplete.listen((event) {
-      setState(() {
-        isPlaying = false;
-        _position = Duration.zero;
-      });
-    });
-
-    play();
   }
 
   @override
@@ -62,26 +53,15 @@ class _MusicPlayerState extends State<MusicPlayer> {
     if (isPlaying) {
       await _audioPlayer.pause();
     } else {
-      play();
+      if (widget.isAsset) {
+        await _audioPlayer.play(AssetSource(widget.songName));
+      } else {
+        await _audioPlayer.play(DeviceFileSource(widget.songName));
+      }
     }
     setState(() {
       isPlaying = !isPlaying;
     });
-  }
-
-  void play() async {
-    if (widget.isAsset) {
-      await _audioPlayer.play(AssetSource(widget.songName));
-    } else {
-      await _audioPlayer.play(DeviceFileSource(widget.songName));
-    }
-  }
-
-  void downloadSong() {
-    // Simulating a download feature
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Song downloaded to device')),
-    );
   }
 
   @override
@@ -89,81 +69,27 @@ class _MusicPlayerState extends State<MusicPlayer> {
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.name),
-        actions: [
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Image.asset(widget.image, height: 200),
+          Slider(
+            value: _position.inSeconds.toDouble(),
+            min: 0,
+            max: _duration.inSeconds.toDouble(),
+            onChanged: (value) async {
+              await _audioPlayer.seek(Duration(seconds: value.toInt()));
+            },
+          ),
           IconButton(
-            icon: const Icon(Icons.download),
-            onPressed: downloadSong,
+            icon: Icon(isPlaying ? Icons.pause : Icons.play_arrow),
+            onPressed: playPause,
           ),
         ],
-      ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          children: [
-            // Large Cover Image
-            ClipRRect(
-              borderRadius: BorderRadius.circular(20),
-              child: Image.asset(widget.image, height: 300, fit: BoxFit.cover),
-            ),
-            const SizedBox(height: 20),
-            // Song Title and Artist
-            Text(
-              widget.name,
-              style: const TextStyle(
-                fontSize: 22,
-                fontWeight: FontWeight.bold,
-              ),
-              textAlign: TextAlign.center,
-            ),
-            const Spacer(),
-            // Progress Slider
-            Slider(
-              value: _position.inSeconds.toDouble(),
-              min: 0,
-              max: _duration.inSeconds.toDouble(),
-              onChanged: (value) async {
-                await _audioPlayer.seek(Duration(seconds: value.toInt()));
-              },
-            ),
-            // Controls
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                IconButton(
-                  icon: const Icon(Icons.skip_previous),
-                  iconSize: 40,
-                  onPressed: () {
-                    // Add previous track logic
-                  },
-                ),
-                IconButton(
-                  icon: Icon(
-                    isPlaying ? Icons.pause : Icons.play_arrow,
-                  ),
-                  iconSize: 60,
-                  onPressed: playPause,
-                ),
-                IconButton(
-                  icon: const Icon(Icons.skip_next),
-                  iconSize: 40,
-                  onPressed: () {
-                    // Add next track logic
-                  },
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            // Add to Playlist Button
-            ElevatedButton.icon(
-              onPressed: () {
-                // Add to playlist logic
-              },
-              icon: const Icon(Icons.add),
-              label: const Text('Add to Playlist'),
-            ),
-          ],
-        ),
       ),
     );
   }
 }
+
+

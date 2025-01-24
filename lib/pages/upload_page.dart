@@ -37,7 +37,7 @@ class _UploadSongState extends State<UploadSong> {
       });
 
       ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Selected Audio: ${result.files.single.name}')),
+        SnackBar(content: Text('Selected Audio: ${result.files.single.name}')),
       );
     }
   }
