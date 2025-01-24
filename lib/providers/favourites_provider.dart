@@ -18,7 +18,6 @@ class FavouritesNotifier extends StateNotifier<List<Map<String, String>>> {
   }
 }
 
-final favouritesProvider =
-StateNotifierProvider<FavouritesNotifier, List<Map<String, String>>>(
+final favouritesProvider = StateNotifierProvider<FavouritesNotifier, List<Map<String, String>>>(
       (ref) => FavouritesNotifier(),
 );

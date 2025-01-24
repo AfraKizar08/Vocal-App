@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../providers/favourites_provider.dart';
 
-
 class FavouritesPage extends ConsumerWidget {
   const FavouritesPage({Key? key}) : super(key: key);
 
@@ -31,8 +30,7 @@ class FavouritesPage extends ConsumerWidget {
           final favourite = favourites[index];
           return Card(
             elevation: 4,
-            margin:
-            const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
+            margin: const EdgeInsets.symmetric(vertical: 10, horizontal: 16),
             child: ListTile(
               title: Text(
                 favourite['title']!,
@@ -42,9 +40,7 @@ class FavouritesPage extends ConsumerWidget {
               trailing: IconButton(
                 icon: const Icon(Icons.favorite, color: Colors.red),
                 onPressed: () {
-                  ref
-                      .read(favouritesProvider.notifier)
-                      .removeFavourite(favourite['title']!);
+                  ref.read(favouritesProvider.notifier).removeFavourite(favourite['title']!);
                 },
               ),
             ),
