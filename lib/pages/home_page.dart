@@ -270,7 +270,6 @@ class _MusicCardState extends State<MusicCard> {
                       name: widget.subtitle.split(': ')[1], // Extract artist name
                       image: widget.coverImage,
                       songName: widget.songPath,
-                      isAsset: widget.songPath.startsWith('assets/'), // Determine if it's an asset
                     ),
                   ),
                 );

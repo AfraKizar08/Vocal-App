@@ -14,17 +14,5 @@ class Song {
 }
 
 List<Song> assetSongs = [
-  Song(
-    title: 'Channa Meraya',
-    artist: 'Atif Aslam',
-    filePath: 'assets/songs/channameraya.mp3',
-    coverImage: 'assets/images/atif.jpg',
-  ),
-  Song(
-    title: 'Song 2',
-    artist: 'Artist 2',
-    filePath: 'assets/songs/song2.mp3',
-    coverImage: 'assets/images/cover2.jpg',
-  ),
-  // Add more songs here...
+
 ];
