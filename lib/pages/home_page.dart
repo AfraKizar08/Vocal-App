@@ -1,8 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:vocal_app/providers/favourites_provider.dart';
 import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
-import 'package:vocal_app/services/database_helper.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -223,7 +220,7 @@ class TrendingCard extends StatelessWidget {
   }
 }
 
-class MusicCard extends ConsumerWidget {
+class MusicCard extends StatefulWidget {
   final String title;
   final String subtitle;
   final String songPath; // Add song path
@@ -238,30 +235,44 @@ class MusicCard extends ConsumerWidget {
   }) : super(key: key);
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    bool isLiked = ref.watch(favouritesProvider).any((fav) => fav['title'] == title);
+  _MusicCardState createState() => _MusicCardState();
+}
 
+class _MusicCardState extends State<MusicCard> {
+  bool isLiked = false;
+
+  @override
+  Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundImage: AssetImage(coverImage),
+          backgroundImage: AssetImage(widget.coverImage), // Display cover image
           backgroundColor: Colors.green,
         ),
         title: Text(
-          title,
+          widget.title,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(subtitle),
+        subtitle: Text(widget.subtitle),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
               icon: const Icon(Icons.play_arrow, color: Colors.green),
               onPressed: () {
-                // Play the song
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MusicPlayer(
+                      name: widget.subtitle.split(': ')[1], // Extract artist name
+                      image: widget.coverImage,
+                      songName: widget.songPath,
+                    ),
+                  ),
+                );
               },
             ),
             IconButton(
@@ -270,16 +281,9 @@ class MusicCard extends ConsumerWidget {
                 color: isLiked ? Colors.red : Colors.grey,
               ),
               onPressed: () {
-                if (isLiked) {
-                  // Remove from favorites
-                  ref.read(favouritesProvider.notifier).removeFavourite(title);
-                } else {
-                  // Add to favorites
-                  ref.read(favouritesProvider.notifier).addFavourite({
-                    'title': title,
-                    'subtitle': subtitle,
-                  });
-                }
+                setState(() {
+                  isLiked = !isLiked;
+                });
               },
             ),
           ],
@@ -287,33 +291,4 @@ class MusicCard extends ConsumerWidget {
       ),
     );
   }
-}
-Future<List<Map<String, dynamic>>> getData() async {
-  return await DatabaseHelper().getSongs();
-}
-
-@override
-Widget build(BuildContext context) {
-  return FutureBuilder<List<Map<String, dynamic>>>(
-    future: getData(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child: CircularProgressIndicator());
-      } else if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
-      } else {
-        final songs = snapshot.data;
-        return ListView.builder(
-          itemCount: songs?.length,
-          itemBuilder: (context, index) {
-            final song = songs?[index];
-            return ListTile(
-              title: Text(song?['title']),
-              subtitle: Text(song?['artist']),
-            );
-          },
-        );
-      }
-    },
-  );
 }
