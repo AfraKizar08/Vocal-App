@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'login_page.dart';
 import 'package:vocal_app/widgets/audio_player_widget.dart';
+import 'package:vocal_app/services/database_helper.dart';
 
 class SignupPage extends StatelessWidget {
   const SignupPage({Key? key}) : super(key: key);
@@ -32,21 +33,30 @@ class SignupPage extends StatelessWidget {
       }
 
       try {
-        await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        UserCredential userCredential = await FirebaseAuth.instance.createUserWithEmailAndPassword(
           email: emailController.text.trim(),
           password: passwordController.text.trim(),
         );
+
+        // Save user details in local database
+        await DatabaseHelper().insertUser ({
+          'uid': userCredential.user!.uid,
+          'name': fullNameController.text,
+          'email': emailController.text,
+        });
+
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
             builder: (context) => MusicPlayer(
-              name: 'Artist Name', // Replace with actual artist name if available
+              name: 'Artist Name',
               image: 'assets/images/default.png',
-              songName: 'Sample Song',
+              songName: 'assets/songs/sample.mp3', // Provide an actual asset path
+              isAsset: true, // Since this is an asset
             ),
           ),
-
         );
+
       } catch (e) {
         showDialog(
           context: context,
@@ -63,7 +73,6 @@ class SignupPage extends StatelessWidget {
         );
       }
     }
-
     return Scaffold(
       body: Container(
         decoration: BoxDecoration(

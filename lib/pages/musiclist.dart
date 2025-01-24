@@ -32,7 +32,7 @@ class _MusicListState extends State<MusicList> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        backgroundColor: Color(0xffD2CEF6),
+        backgroundColor: const Color(0xffD2CEF6),
         leading: IconButton(
           icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
           onPressed: () {
@@ -48,7 +48,7 @@ class _MusicListState extends State<MusicList> {
             MaterialPageRoute(builder: (context) => const UploadSong()),
           );
         },
-        backgroundColor: Color(0xffD2CEF6),
+        backgroundColor: const Color(0xffD2CEF6),
         child: const Icon(Icons.add),
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -66,21 +66,24 @@ class _MusicListState extends State<MusicList> {
               'artist': song.artist,
               'filepath': song.filePath,
               'coverImage': song.coverImage,
-            }).toList());
+            }));
 
             return ListView.builder(
               itemCount: combinedSongs.length,
               itemBuilder: (context, index) {
                 final song = combinedSongs[index];
+                final isAssetSong = song['filepath'].startsWith('assets/');
+
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
                       context,
                       MaterialPageRoute(
                         builder: (context) => MusicPlayer(
-                          name: song['artist'], // Use the artist from the database or asset
+                          name: song['artist'],
                           image: song['coverImage'],
                           songName: song['filepath'],
+                          isAsset: isAssetSong, // Pass whether it's an asset
                         ),
                       ),
                     );
@@ -88,7 +91,7 @@ class _MusicListState extends State<MusicList> {
                   child: listSong(
                     song['title'],
                     song['artist'],
-                    song['coverImage'], // Get the cover image path
+                    song['coverImage'],
                   ),
                 );
               },
@@ -102,10 +105,10 @@ class _MusicListState extends State<MusicList> {
   Widget listSong(String songName, String artistName, String coverImagePath) {
     return ListTile(
       leading: CircleAvatar(
-        backgroundColor: Color(0xffD9D9D9),
+        backgroundColor: const Color(0xffD9D9D9),
         backgroundImage: coverImagePath.isNotEmpty
-            ? FileImage(File(coverImagePath)) // Load the cover image
-            : const AssetImage('assets/images/top_50.jpeg') as ImageProvider, // Default image if none
+            ? AssetImage(coverImagePath) // Display cover image
+            : const AssetImage('assets/images/top_50.jpeg'),
         child: coverImagePath.isEmpty
             ? const Icon(Icons.music_note,
             size: 25, color: Color.fromARGB(255, 221, 46, 33))
