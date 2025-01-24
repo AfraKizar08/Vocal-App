@@ -2,8 +2,11 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
+import 'package:vocal_app/pages/home_page.dart';
 import 'package:vocal_app/services/database_helper.dart';
 import 'package:vocal_app/pages/musiclist.dart';
+
+import '../main.dart';
 
 class UploadSong extends StatefulWidget {
   const UploadSong({super.key});
