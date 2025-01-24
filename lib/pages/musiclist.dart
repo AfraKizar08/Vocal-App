@@ -29,12 +29,6 @@ class _MusicListState extends State<MusicList> {
           style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
         ),
         backgroundColor: Color(0xff000000),
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
       ),
       // Upload song FAB button
       floatingActionButton: FloatingActionButton(
@@ -56,13 +50,16 @@ class _MusicListState extends State<MusicList> {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {
             // Combine database songs with asset songs
-            List<Map<String, dynamic>> combinedSongs = List.from(snapshot.data!);
-            combinedSongs.addAll(assetSongs.map((song) => {
-              'title': song.title,
-              'artist': song.artist,
-              'filepath': song.filePath,
-              'coverImage': song.coverImage,
-            }).toList());
+            List<Map<String, dynamic>> combinedSongs =
+                List.from(snapshot.data!);
+            combinedSongs.addAll(assetSongs
+                .map((song) => {
+                      'title': song.title,
+                      'artist': song.artist,
+                      'filepath': song.filePath,
+                      'coverImage': song.coverImage,
+                    })
+                .toList());
 
             return ListView.builder(
               itemCount: combinedSongs.length,
@@ -74,7 +71,8 @@ class _MusicListState extends State<MusicList> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => MusicPlayer(
-                          name: song['artist'], // Use the artist from the database or asset
+                          name: song[
+                              'artist'], // Use the artist from the database or asset
                           image: song['coverImage'],
                           songName: song['filepath'],
                         ),
@@ -101,10 +99,11 @@ class _MusicListState extends State<MusicList> {
         backgroundColor: Color(0xffD9D9D9),
         backgroundImage: coverImagePath.isNotEmpty
             ? FileImage(File(coverImagePath)) // Load the cover image
-            : const AssetImage('assets/images/top_50.jpeg') as ImageProvider, // Default image if none
+            : const AssetImage('assets/images/top_50.jpeg')
+                as ImageProvider, // Default image if none
         child: coverImagePath.isEmpty
             ? const Icon(Icons.music_note,
-            size: 25, color: Color.fromARGB(255, 221, 46, 33))
+                size: 25, color: Color.fromARGB(255, 221, 46, 33))
             : null,
       ),
       title: Text(songName),
