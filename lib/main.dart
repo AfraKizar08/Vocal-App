@@ -4,6 +4,7 @@ import 'pages/home_page.dart' as home; // Use an alias for home_page.dart
 import 'pages/profile_page.dart';
 import 'pages/search_page.dart';
 import 'pages/favourites_page.dart';
+import 'pages/upload_page.dart';
 import 'pages/playlist_page.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'pages/splash_screen.dart';
