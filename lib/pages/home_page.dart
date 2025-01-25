@@ -4,11 +4,11 @@ import 'package:vocal_app/providers/favourites_provider.dart';
 import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
 import 'package:vocal_app/services/database_helper.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Align(
@@ -151,18 +151,21 @@ class HomePage extends StatelessWidget {
                     subtitle: 'Artist: Maher Zain',
                     songPath: 'path/to/arabian_vibes.mp3', //
                     coverImage: 'assets/images/maher.jpg', // Replace with actual cover image
+                    isLiked: ref.watch(favouritesProvider).any((fav) => fav['title'] == 'Arabian Vibes'),
                   ),
                   MusicCard(
                     title: 'Channa Meraya',
                     subtitle: 'Artist: Atif Aslam',
                     songPath: 'assets/songs/channameraya.mp3', // Replace with actual path
                     coverImage: 'assets/images/atif.jpg', // Replace with actual cover image
+                    isLiked: ref.watch(favouritesProvider).any((fav) => fav['title'] == 'Arabian Vibes'),
                   ),
                   MusicCard(
                     title: 'Harmonic Bliss',
                     subtitle: 'Artist: One Direction',
                     songPath: 'path/to/harmonic_bliss.mp3', // Replace with actual path
                     coverImage: 'assets/images/onedirection.jpg', // Replace with actual cover image
+                    isLiked: ref.watch(favouritesProvider).any((fav) => fav['title'] == 'Arabian Vibes'),
                   ),
                 ],
               ),
@@ -180,6 +183,7 @@ class TrendingCard extends StatelessWidget {
   final String title;
   final String artist;
   final String image;
+
 
   const TrendingCard({
     required this.title,
@@ -228,12 +232,14 @@ class MusicCard extends ConsumerWidget {
   final String subtitle;
   final String songPath; // Add song path
   final String coverImage; // Add cover image path
+  final bool isLiked;
 
   const MusicCard({
     required this.title,
     required this.subtitle,
     required this.songPath,
     required this.coverImage,
+    required this.isLiked,
     Key? key,
   }) : super(key: key);
 
