@@ -1,11 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vocal_app/providers/favourites_provider.dart';
+import 'package:vocal_app/services/database_helper.dart';
+import 'package:vocal_app/pages/musiclist.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Align(
@@ -60,7 +63,10 @@ class HomePage extends StatelessWidget {
                         const SizedBox(height: 12),
                         ElevatedButton(
                           onPressed: () {
-                            // Start discovering music
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MusicList()),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -148,18 +154,21 @@ class HomePage extends StatelessWidget {
                     subtitle: 'Artist: Maher Zain',
                     songPath: 'path/to/arabian_vibes.mp3', //
                     coverImage: 'assets/images/maher.jpg', // Replace with actual cover image
+                    isLiked: ref.watch(favouritesProvider).any((fav) => fav['title'] == 'Arabian Vibes'),
                   ),
                   MusicCard(
                     title: 'Channa Meraya',
                     subtitle: 'Artist: Atif Aslam',
                     songPath: 'assets/songs/channameraya.mp3', // Replace with actual path
                     coverImage: 'assets/images/atif.jpg', // Replace with actual cover image
+                    isLiked: ref.watch(favouritesProvider).any((fav) => fav['title'] == 'Arabian Vibes'),
                   ),
                   MusicCard(
                     title: 'Harmonic Bliss',
                     subtitle: 'Artist: One Direction',
                     songPath: 'path/to/harmonic_bliss.mp3', // Replace with actual path
                     coverImage: 'assets/images/onedirection.jpg', // Replace with actual cover image
+                    isLiked: ref.watch(favouritesProvider).any((fav) => fav['title'] == 'Arabian Vibes'),
                   ),
                 ],
               ),
@@ -177,6 +186,7 @@ class TrendingCard extends StatelessWidget {
   final String title;
   final String artist;
   final String image;
+
 
   const TrendingCard({
     required this.title,
@@ -220,59 +230,47 @@ class TrendingCard extends StatelessWidget {
   }
 }
 
-class MusicCard extends StatefulWidget {
+class MusicCard extends ConsumerWidget {
   final String title;
   final String subtitle;
   final String songPath; // Add song path
   final String coverImage; // Add cover image path
+  final bool isLiked;
 
   const MusicCard({
     required this.title,
     required this.subtitle,
     required this.songPath,
     required this.coverImage,
+    required this.isLiked,
     Key? key,
   }) : super(key: key);
 
   @override
-  _MusicCardState createState() => _MusicCardState();
-}
+  Widget build(BuildContext context, WidgetRef ref) {
+    bool isLiked = ref.watch(favouritesProvider).any((fav) => fav['title'] == title);
 
-class _MusicCardState extends State<MusicCard> {
-  bool isLiked = false;
-
-  @override
-  Widget build(BuildContext context) {
     return Card(
       margin: const EdgeInsets.symmetric(vertical: 8),
       elevation: 4,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundImage: AssetImage(widget.coverImage), // Display cover image
+          backgroundImage: AssetImage(coverImage),
           backgroundColor: Colors.green,
         ),
         title: Text(
-          widget.title,
+          title,
           style: const TextStyle(fontWeight: FontWeight.bold),
         ),
-        subtitle: Text(widget.subtitle),
+        subtitle: Text(subtitle),
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
             IconButton(
               icon: const Icon(Icons.play_arrow, color: Colors.green),
               onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                    builder: (context) => MusicPlayer(
-                      name: widget.subtitle.split(': ')[1], // Extract artist name
-                      image: widget.coverImage,
-                      songName: widget.songPath,
-                    ),
-                  ),
-                );
+                // Play the song
               },
             ),
             IconButton(
@@ -281,9 +279,16 @@ class _MusicCardState extends State<MusicCard> {
                 color: isLiked ? Colors.red : Colors.grey,
               ),
               onPressed: () {
-                setState(() {
-                  isLiked = !isLiked;
-                });
+                if (isLiked) {
+                  // Remove from favorites
+                  ref.read(favouritesProvider.notifier).removeFavourite(title);
+                } else {
+                  // Add to favorites
+                  ref.read(favouritesProvider.notifier).addFavourite({
+                    'title': title,
+                    'subtitle': subtitle,
+                  });
+                }
               },
             ),
           ],
@@ -291,4 +296,33 @@ class _MusicCardState extends State<MusicCard> {
       ),
     );
   }
+}
+Future<List<Map<String, dynamic>>> getData() async {
+  return await DatabaseHelper().getSongs();
+}
+
+@override
+Widget build(BuildContext context) {
+  return FutureBuilder<List<Map<String, dynamic>>>(
+    future: getData(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else {
+        final songs = snapshot.data;
+        return ListView.builder(
+          itemCount: songs?.length,
+          itemBuilder: (context, index) {
+            final song = songs?[index];
+            return ListTile(
+              title: Text(song?['title']),
+              subtitle: Text(song?['artist']),
+            );
+          },
+        );
+      }
+    },
+  );
 }

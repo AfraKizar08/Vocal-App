@@ -1,18 +1,21 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:vocal_app/pages/home_page.dart';
 import 'package:vocal_app/pages/upload_page.dart';
 import '../services/database_helper.dart';
 import '../widgets/audio_player_widget.dart';
 import '../services/song.dart'; // Import the asset songs
+import '../providers/favourites_provider.dart';
 
-class MusicList extends StatefulWidget {
+class MusicList extends ConsumerStatefulWidget {
   const MusicList({super.key});
 
   @override
-  State<MusicList> createState() => _MusicListState();
+  ConsumerState<MusicList> createState() => _MusicListState();
 }
 
-class _MusicListState extends State<MusicList> {
+class _MusicListState extends ConsumerState<MusicList> {
   Future<List<Map<String, dynamic>>> getData() async {
     // Fetch songs from the local SQLite database
     return await DatabaseHelper().getSongs();
@@ -72,6 +75,8 @@ class _MusicListState extends State<MusicList> {
               itemCount: combinedSongs.length,
               itemBuilder: (context, index) {
                 final song = combinedSongs[index];
+                bool isLiked = ref.watch(favouritesProvider).any((fav) => fav['title'] == song['title']);
+
                 return GestureDetector(
                   onTap: () {
                     Navigator.push(
@@ -85,10 +90,12 @@ class _MusicListState extends State<MusicList> {
                       ),
                     );
                   },
-                  child: listSong(
-                    song['title'],
-                    song['artist'],
-                    song['coverImage'], // Get the cover image path
+                  child: MusicCard(
+                    title: song['title'],
+                    subtitle: song['artist'],
+                    songPath: song['filepath'],
+                    coverImage: song['coverImage'],
+                    isLiked: isLiked, // Pass the isLiked state// Get the cover image path
                   ),
                 );
               },
