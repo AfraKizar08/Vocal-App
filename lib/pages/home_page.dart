@@ -1,15 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vocal_app/providers/favourites_provider.dart';
+import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
 import 'package:vocal_app/services/database_helper.dart';
-import 'package:vocal_app/pages/musiclist.dart';
-import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import MusicPlayer
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Align(
@@ -64,10 +65,7 @@ class HomePage extends StatelessWidget {
                         const SizedBox(height: 12),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const MusicList()),
-                            );
+                            // Start discovering music
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -149,29 +147,40 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Inside the Recent Tracks Section
-                  MusicCard(
-                    title: 'Arabian Vibes',
-                    subtitle: 'Artist: Maher Zain',
-                    songPath: 'assets/songs/jhol.mp3',
-                    coverImage: 'assets/images/maher.jpg',
-                  ),
-                  MusicCard(
-                    title: 'Channa Meraya',
-                    subtitle: 'Artist: Atif Aslam',
-                    songPath: 'assets/songs/channameraya.mp3',
-                    coverImage: 'assets/images/atif.jpg',
-                  ),
-                  MusicCard(
-                    title: 'Harmonic Bliss',
-                    subtitle: 'Artist: One Direction',
-                    songPath: 'assets/songs/Inthestars.mp3',
-                    coverImage: 'assets/images/onedirection.jpg',
+                  FutureBuilder<List<Map<String, dynamic>>>(
+                    future: DatabaseHelper().getSongs(), // Fetch recent tracks
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else {
+                        final songs = snapshot.data ?? [];
+                        if (songs.isEmpty) {
+                          return Center(child: Text('No recent tracks available.'));
+                        }
+                        final limitedSongs = songs.take(3).toList();
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: limitedSongs.length,
+                          itemBuilder: (context, index) {
+                            final song = limitedSongs[index];
+                            return MusicCard(
+                              title: song['title'],
+                              subtitle: song['artist'],
+                              songPath: song['filepath'],
+                              coverImage: song['coverImage'],
+                              isLiked: ref.watch(favouritesProvider).any((fav) => fav['title'] == song['title']),
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
           ],
         ),
@@ -179,11 +188,11 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
 class TrendingCard extends StatelessWidget {
   final String title;
   final String artist;
   final String image;
+
 
   const TrendingCard({
     required this.title,
@@ -194,48 +203,32 @@ class TrendingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        // Navigate to MusicPlayer with the correct parameters
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => MusicPlayer(
-              name: 'Arabian Night',
-              image: 'assets/images/arabnight.jpg',
-              songName: 'assets/songs/arabian_night.mp3',
-              isAsset: true, // Mark as an asset
-            ),
-          ),
-        );
-      },
+    return Container(
+      margin: const EdgeInsets.only(right: 16),
+      width: 140,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(12),
+        image: DecorationImage(
+          image: AssetImage(image),
+          fit: BoxFit.cover,
+        ),
+      ),
       child: Container(
-        margin: const EdgeInsets.only(right: 16),
-        width: 140,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          image: DecorationImage(
-            image: AssetImage(image),
-            fit: BoxFit.cover,
+          gradient: LinearGradient(
+            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+            begin: Alignment.bottomCenter,
+            end: Alignment.topCenter,
           ),
         ),
-        child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(12),
-            gradient: LinearGradient(
-              colors: [Colors.black.withOpacity(0.6), Colors.transparent],
-              begin: Alignment.bottomCenter,
-              end: Alignment.topCenter,
-            ),
-          ),
-          padding: const EdgeInsets.all(8),
-          alignment: Alignment.bottomLeft,
-          child: Text(
-            '$title\n$artist',
-            style: const TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.bold,
-            ),
+        padding: const EdgeInsets.all(8),
+        alignment: Alignment.bottomLeft,
+        child: Text(
+          '$title\n$artist',
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.bold,
           ),
         ),
       ),
@@ -246,14 +239,16 @@ class TrendingCard extends StatelessWidget {
 class MusicCard extends ConsumerWidget {
   final String title;
   final String subtitle;
-  final String songPath;
-  final String coverImage;
+  final String songPath; // Add song path
+  final String coverImage; // Add cover image path
+  final bool isLiked;
 
   const MusicCard({
     required this.title,
     required this.subtitle,
     required this.songPath,
     required this.coverImage,
+    required this.isLiked,
     Key? key,
   }) : super(key: key);
 
@@ -267,7 +262,9 @@ class MusicCard extends ConsumerWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundImage: AssetImage(coverImage),
+          backgroundImage: coverImage.isNotEmpty
+              ? FileImage(File(coverImage)) // Load the cover image
+              : const AssetImage('assets/images/default_cover.png') as ImageProvider, // Default image if none
           backgroundColor: Colors.green,
         ),
         title: Text(
@@ -286,10 +283,9 @@ class MusicCard extends ConsumerWidget {
                   context,
                   MaterialPageRoute(
                     builder: (context) => MusicPlayer(
-                      name: 'Arabian Night',
-                      image: 'assets/images/arabnight.jpg',
-                      songName: 'assets/songs/arabian_night.mp3',
-                      isAsset: true, // Mark as an asset
+                      name: title,
+                      image: coverImage,
+                      songName: songPath,
                     ),
                   ),
                 );
@@ -318,4 +314,33 @@ class MusicCard extends ConsumerWidget {
       ),
     );
   }
+}
+Future<List<Map<String, dynamic>>> getData() async {
+  return await DatabaseHelper().getSongs();
+}
+
+@override
+Widget build(BuildContext context) {
+  return FutureBuilder<List<Map<String, dynamic>>>(
+    future: getData(),
+    builder: (context, snapshot) {
+      if (snapshot.connectionState == ConnectionState.waiting) {
+        return Center(child: CircularProgressIndicator());
+      } else if (snapshot.hasError) {
+        return Center(child: Text('Error: ${snapshot.error}'));
+      } else {
+        final songs = snapshot.data;
+        return ListView.builder(
+          itemCount: songs?.length,
+          itemBuilder: (context, index) {
+            final song = songs?[index];
+            return ListTile(
+              title: Text(song?['title']),
+              subtitle: Text(song?['artist']),
+            );
+          },
+        );
+      }
+    },
+  );
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import '../services/song.dart'; // Import the asset songs
-import 'package:vocal_app/widgets/audio_player_widget.dart'; // Adjust the path as necessary
+import 'package:vocal_app/services/database_helper.dart'; // Import your DatabaseHelper
 
 class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
@@ -10,55 +9,95 @@ class SearchPage extends StatefulWidget {
 }
 
 class _SearchPageState extends State<SearchPage> {
-  String query = '';
+  String _searchQuery = '';
+  Future<List<Map<String, dynamic>>>? _searchResults;
+
+  void _onSearchChanged(String query) {
+    setState(() {
+      _searchQuery = query;
+      _searchResults = _searchSongs(query); // Call the search function
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> _searchSongs(String query) async {
+    if (query.isEmpty) {
+      return []; // Return an empty list if the query is empty
+    }
+    // Fetch songs from the database that match the query
+    return await DatabaseHelper().getSongsByTitle(query);
+  }
 
   @override
   Widget build(BuildContext context) {
-    List<Song> filteredSongs = assetSongs
-        .where((song) => song.title.toLowerCase().contains(query.toLowerCase()) ||
-        song.artist.toLowerCase().contains(query.toLowerCase()))
-        .toList();
-
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Search Music'),
+        title: const Text(
+          'Search Music',
+          style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+        ),
+        centerTitle: true,
+        backgroundColor: Colors.black,
       ),
-    body: Column(
-    children: [
-    TextField(
-    decoration: const InputDecoration(hintText: 'Search songs...'),
-    onChanged: (value) {
-    setState(() {
-    query = value;
-    });
-    },
-    ),
-    Expanded(
-    child: ListView.builder(
-    itemCount: filteredSongs.length,
-    itemBuilder: (context, index) {
-    return ListTile(
-    title: Text(filteredSongs[index].title),
-    subtitle: Text(filteredSongs[index].artist),
-    onTap: () {
-    Navigator.push(
-    context,
-    MaterialPageRoute(
-    builder: (context) => MusicPlayer(
-      name: 'Atif Aslam',
-      image: 'assets/images/atif.jpg',
-      songName: 'assets/songs/channa_meraya.mp3',
-      isAsset: true, // Specify as an asset
-    ),
-    ),
-    );
-    },
-    );
-    },
-    ),
-    ),
-    ],
-    ),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // Search Bar
+            TextField(
+              decoration: InputDecoration(
+                prefixIcon: const Icon(Icons.search, color: Colors.black),
+                hintText: 'Search for tracks, artists, or albums...',
+                hintStyle: const TextStyle(color: Colors.grey),
+                filled: true,
+                fillColor: Colors.grey[200],
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(12),
+                  borderSide: BorderSide.none,
+                ),
+              ),
+              onChanged: _onSearchChanged, // Update search query on change
+            ),
+            const SizedBox(height: 20),
+
+            // Search Results
+            Expanded(
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _searchResults,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No results found.',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    );
+                  } else {
+                    final songs = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: songs.length,
+                      itemBuilder: (context, index) {
+                        final song = songs[index];
+                        return ListTile(
+                          title: Text(song['title']),
+                          subtitle: Text(song['artist']),
+                          onTap: () {
+                            // Handle song selection, e.g., navigate to the player
+                          },
+                        );
+                      },
+                    );
+                  }
+                },
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
