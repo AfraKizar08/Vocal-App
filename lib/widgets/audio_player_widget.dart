@@ -44,9 +44,12 @@ class _MusicPlayerState extends State<MusicPlayer> {
   }
 
   Future<void> _playAudio() async {
-    await _audioPlayer.play(AssetSource(widget.songName)); // Use AssetSource for assets
+    try {
+      await _audioPlayer.play(DeviceFileSource(widget.songName));
+    } catch (e) {
+      print("Error playing audio: $e"); // Log the error
+    }
   }
-
   @override
   void dispose() {
     _audioPlayer.dispose();
