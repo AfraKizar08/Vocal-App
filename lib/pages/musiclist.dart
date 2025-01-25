@@ -51,14 +51,14 @@ class _MusicListState extends State<MusicList> {
           } else {
             // Combine database songs with asset songs
             List<Map<String, dynamic>> combinedSongs =
-                List.from(snapshot.data!);
+            List.from(snapshot.data!);
             combinedSongs.addAll(assetSongs
                 .map((song) => {
-                      'title': song.title,
-                      'artist': song.artist,
-                      'filepath': song.filePath,
-                      'coverImage': song.coverImage,
-                    })
+              'title': song.title,
+              'artist': song.artist,
+              'filepath': song.filePath,
+              'coverImage': song.coverImage,
+            })
                 .toList());
 
             return ListView.builder(
@@ -72,7 +72,7 @@ class _MusicListState extends State<MusicList> {
                       MaterialPageRoute(
                         builder: (context) => MusicPlayer(
                           name: song[
-                              'artist'], // Use the artist from the database or asset
+                          'artist'], // Use the artist from the database or asset
                           image: song['coverImage'],
                           songName: song['filepath'],
                         ),
@@ -100,10 +100,10 @@ class _MusicListState extends State<MusicList> {
         backgroundImage: coverImagePath.isNotEmpty
             ? FileImage(File(coverImagePath)) // Load the cover image
             : const AssetImage('assets/images/top_50.jpeg')
-                as ImageProvider, // Default image if none
+        as ImageProvider, // Default image if none
         child: coverImagePath.isEmpty
             ? const Icon(Icons.music_note,
-                size: 25, color: Color.fromARGB(255, 221, 46, 33))
+            size: 25, color: Color.fromARGB(255, 221, 46, 33))
             : null,
       ),
       title: Text(songName),
