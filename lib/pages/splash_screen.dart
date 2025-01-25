@@ -12,7 +12,7 @@ class SplashScreen extends StatelessWidget {
         gifPath: 'assets/images/splash.gif', // Path to your GIF
         gifWidth: MediaQuery.of(context).size.width, // Full width
         gifHeight: MediaQuery.of(context).size.height, // Full height
-        duration: const Duration(seconds: 5), // Duration of the splash screen
+        duration: const Duration(seconds: 10), // Duration of the splash screen
         backgroundColor: Colors.black, // Background color
         nextScreen: const LoginPage(), // Navigate to LoginPage after splash
       ),
