@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vocal_app/providers/favourites_provider.dart';
-import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
 import 'package:vocal_app/services/database_helper.dart';
 import 'package:vocal_app/pages/musiclist.dart';
 
