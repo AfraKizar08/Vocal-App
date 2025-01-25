@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vocal_app/providers/favourites_provider.dart';
-import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
 import 'package:vocal_app/services/database_helper.dart';
+import 'package:vocal_app/pages/musiclist.dart';
 
 class HomePage extends ConsumerWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -63,7 +63,10 @@ class HomePage extends ConsumerWidget {
                         const SizedBox(height: 12),
                         ElevatedButton(
                           onPressed: () {
-                            // Start discovering music
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (context) => const MusicList()),
+                            );
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
