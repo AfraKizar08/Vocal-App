@@ -1,7 +1,31 @@
 import 'package:flutter/material.dart';
+import 'package:vocal_app/services/database_helper.dart'; // Import your DatabaseHelper
 
-class SearchPage extends StatelessWidget {
+class SearchPage extends StatefulWidget {
   const SearchPage({Key? key}) : super(key: key);
+
+  @override
+  _SearchPageState createState() => _SearchPageState();
+}
+
+class _SearchPageState extends State<SearchPage> {
+  String _searchQuery = '';
+  Future<List<Map<String, dynamic>>>? _searchResults;
+
+  void _onSearchChanged(String query) {
+    setState(() {
+      _searchQuery = query;
+      _searchResults = _searchSongs(query); // Call the search function
+    });
+  }
+
+  Future<List<Map<String, dynamic>>> _searchSongs(String query) async {
+    if (query.isEmpty) {
+      return []; // Return an empty list if the query is empty
+    }
+    // Fetch songs from the database that match the query
+    return await DatabaseHelper().getSongsByTitle(query);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -32,74 +56,48 @@ class SearchPage extends StatelessWidget {
                   borderSide: BorderSide.none,
                 ),
               ),
-              onChanged: (value) {
-                // Perform search action
-              },
+              onChanged: _onSearchChanged, // Update search query on change
             ),
             const SizedBox(height: 20),
 
-            // Trending Section
-            const Text(
-              'Category Searches',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.red,
-              ),
-            ),
-            const SizedBox(height: 10),
-            Wrap(
-              spacing: 8.0,
-              runSpacing: 8.0,
-              children: const [
-                TrendingChip(label: 'Shreya Goshal'),
-                TrendingChip(label: 'Atif Aslam'),
-                TrendingChip(label: 'Maher Zain'),
-                TrendingChip(label: 'Top Hindi'),
-                TrendingChip(label: 'Arabian Night'),
-                TrendingChip(label: 'Tamil vocal'),
-              ],
-            ),
-            const SizedBox(height: 20),
-
-            // Placeholder or Search Result Info
+            // Search Results
             Expanded(
-              child: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Icon(Icons.music_note, size: 80, color: Colors.black),
-                    const SizedBox(height: 10),
-                    const Text(
-                      'Search for your favorite vocals!',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 16, color: Colors.grey),
-                    ),
-                  ],
-                ),
+              child: FutureBuilder<List<Map<String, dynamic>>>(
+                future: _searchResults,
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(child: CircularProgressIndicator());
+                  } else if (snapshot.hasError) {
+                    return Center(child: Text('Error: ${snapshot.error}'));
+                  } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                    return const Center(
+                      child: Text(
+                        'No results found.',
+                        style: TextStyle(fontSize: 16, color: Colors.grey),
+                      ),
+                    );
+                  } else {
+                    final songs = snapshot.data!;
+                    return ListView.builder(
+                      itemCount: songs.length,
+                      itemBuilder: (context, index) {
+                        final song = songs[index];
+                        return ListTile(
+                          title: Text(song['title']),
+                          subtitle: Text(song['artist']),
+                          onTap: () {
+                            // Handle song selection, e.g., navigate to the player
+                          },
+                        );
+                      },
+                    );
+                  }
+                },
               ),
             ),
           ],
         ),
       ),
-    );
-  }
-}
-
-class TrendingChip extends StatelessWidget {
-  final String label;
-
-  const TrendingChip({required this.label, Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Chip(
-      label: Text(
-        label,
-        style: const TextStyle(color: Colors.white),
-      ),
-      backgroundColor: Colors.green,
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
     );
   }
 }

@@ -29,6 +29,16 @@ class DatabaseHelper {
     );
   }
 
+  Future<List<Map<String, dynamic>>> getSongsByTitle(String title) async {
+    final db = await database;
+    return await db.query(
+      'songs',
+      where: 'title LIKE ? OR artist LIKE ?',
+      whereArgs: ['%$title%', '%$title%'], // Search in both title and artist
+      orderBy: 'id DESC',
+    );
+  }
+
   Future<void> insertSong(Map<String, dynamic> song) async {
     final db = await database;
     await db.insert('songs', song);
