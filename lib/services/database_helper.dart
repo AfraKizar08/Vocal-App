@@ -36,7 +36,7 @@ class DatabaseHelper {
 
   Future<List<Map<String, dynamic>>> getSongs() async {
     final db = await database;
-    return await db.query('songs');
+    return await db.query('songs', orderBy: 'id DESC');
   }
 
   Future<void> deleteSong(int id) async {

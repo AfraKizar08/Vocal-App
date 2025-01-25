@@ -1,14 +1,16 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vocal_app/providers/favourites_provider.dart';
+import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import the MusicPlayer class
 import 'package:vocal_app/services/database_helper.dart';
-import 'package:vocal_app/pages/musiclist.dart';
 
-class HomePage extends StatelessWidget {
+class HomePage extends ConsumerWidget {
   const HomePage({Key? key}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     return Scaffold(
       appBar: AppBar(
         title: const Align(
@@ -63,10 +65,7 @@ class HomePage extends StatelessWidget {
                         const SizedBox(height: 12),
                         ElevatedButton(
                           onPressed: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(builder: (context) => const MusicList()),
-                            );
+                            // Start discovering music
                           },
                           style: ElevatedButton.styleFrom(
                             backgroundColor: Colors.white,
@@ -148,29 +147,40 @@ class HomePage extends StatelessWidget {
                     ),
                   ),
                   const SizedBox(height: 10),
-                  // Inside the Recent Tracks Section
-                  MusicCard(
-                    title: 'Arabian Vibes',
-                    subtitle: 'Artist: Maher Zain',
-                    songPath: 'path/to/arabian_vibes.mp3', //
-                    coverImage: 'assets/images/maher.jpg', // Replace with actual cover image
-                  ),
-                  MusicCard(
-                    title: 'Channa Meraya',
-                    subtitle: 'Artist: Atif Aslam',
-                    songPath: 'assets/songs/channameraya.mp3', // Replace with actual path
-                    coverImage: 'assets/images/atif.jpg', // Replace with actual cover image
-                  ),
-                  MusicCard(
-                    title: 'Harmonic Bliss',
-                    subtitle: 'Artist: One Direction',
-                    songPath: 'path/to/harmonic_bliss.mp3', // Replace with actual path
-                    coverImage: 'assets/images/onedirection.jpg', // Replace with actual cover image
+                  FutureBuilder<List<Map<String, dynamic>>>(
+                    future: DatabaseHelper().getSongs(), // Fetch recent tracks
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return Center(child: CircularProgressIndicator());
+                      } else if (snapshot.hasError) {
+                        return Center(child: Text('Error: ${snapshot.error}'));
+                      } else {
+                        final songs = snapshot.data ?? [];
+                        if (songs.isEmpty) {
+                          return Center(child: Text('No recent tracks available.'));
+                        }
+                        final limitedSongs = songs.take(3).toList();
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: NeverScrollableScrollPhysics(),
+                          itemCount: limitedSongs.length,
+                          itemBuilder: (context, index) {
+                            final song = limitedSongs[index];
+                            return MusicCard(
+                              title: song['title'],
+                              subtitle: song['artist'],
+                              songPath: song['filepath'],
+                              coverImage: song['coverImage'],
+                              isLiked: ref.watch(favouritesProvider).any((fav) => fav['title'] == song['title']),
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
                 ],
               ),
             ),
-
             const SizedBox(height: 20),
           ],
         ),
@@ -178,11 +188,11 @@ class HomePage extends StatelessWidget {
     );
   }
 }
-
 class TrendingCard extends StatelessWidget {
   final String title;
   final String artist;
   final String image;
+
 
   const TrendingCard({
     required this.title,
@@ -231,12 +241,14 @@ class MusicCard extends ConsumerWidget {
   final String subtitle;
   final String songPath; // Add song path
   final String coverImage; // Add cover image path
+  final bool isLiked;
 
   const MusicCard({
     required this.title,
     required this.subtitle,
     required this.songPath,
     required this.coverImage,
+    required this.isLiked,
     Key? key,
   }) : super(key: key);
 
@@ -250,7 +262,9 @@ class MusicCard extends ConsumerWidget {
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: ListTile(
         leading: CircleAvatar(
-          backgroundImage: AssetImage(coverImage),
+          backgroundImage: coverImage.isNotEmpty
+              ? FileImage(File(coverImage)) // Load the cover image
+              : const AssetImage('assets/images/default_cover.png') as ImageProvider, // Default image if none
           backgroundColor: Colors.green,
         ),
         title: Text(
@@ -265,6 +279,16 @@ class MusicCard extends ConsumerWidget {
               icon: const Icon(Icons.play_arrow, color: Colors.green),
               onPressed: () {
                 // Play the song
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MusicPlayer(
+                      name: title,
+                      image: coverImage,
+                      songName: songPath,
+                    ),
+                  ),
+                );
               },
             ),
             IconButton(
