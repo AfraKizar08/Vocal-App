@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vocal_app/providers/favourites_provider.dart';
 import 'package:vocal_app/services/database_helper.dart';
 import 'package:vocal_app/pages/musiclist.dart';
+import 'package:vocal_app/widgets/audio_player_widget.dart'; // Import MusicPlayer
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -152,20 +153,20 @@ class HomePage extends StatelessWidget {
                   MusicCard(
                     title: 'Arabian Vibes',
                     subtitle: 'Artist: Maher Zain',
-                    songPath: 'path/to/arabian_vibes.mp3', //
-                    coverImage: 'assets/images/maher.jpg', // Replace with actual cover image
+                    songPath: 'assets/songs/jhol.mp3',
+                    coverImage: 'assets/images/maher.jpg',
                   ),
                   MusicCard(
                     title: 'Channa Meraya',
                     subtitle: 'Artist: Atif Aslam',
-                    songPath: 'assets/songs/channameraya.mp3', // Replace with actual path
-                    coverImage: 'assets/images/atif.jpg', // Replace with actual cover image
+                    songPath: 'assets/songs/channameraya.mp3',
+                    coverImage: 'assets/images/atif.jpg',
                   ),
                   MusicCard(
                     title: 'Harmonic Bliss',
                     subtitle: 'Artist: One Direction',
-                    songPath: 'path/to/harmonic_bliss.mp3', // Replace with actual path
-                    coverImage: 'assets/images/onedirection.jpg', // Replace with actual cover image
+                    songPath: 'assets/songs/Inthestars.mp3',
+                    coverImage: 'assets/images/onedirection.jpg',
                   ),
                 ],
               ),
@@ -193,32 +194,48 @@ class TrendingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      margin: const EdgeInsets.only(right: 16),
-      width: 140,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(12),
-        image: DecorationImage(
-          image: AssetImage(image),
-          fit: BoxFit.cover,
-        ),
-      ),
+    return GestureDetector(
+      onTap: () {
+        // Navigate to MusicPlayer with the correct parameters
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => MusicPlayer(
+              name: 'Arabian Night',
+              image: 'assets/images/arabnight.jpg',
+              songName: 'assets/songs/arabian_night.mp3',
+              isAsset: true, // Mark as an asset
+            ),
+          ),
+        );
+      },
       child: Container(
+        margin: const EdgeInsets.only(right: 16),
+        width: 140,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          gradient: LinearGradient(
-            colors: [Colors.black.withOpacity(0.6), Colors.transparent],
-            begin: Alignment.bottomCenter,
-            end: Alignment.topCenter,
+          image: DecorationImage(
+            image: AssetImage(image),
+            fit: BoxFit.cover,
           ),
         ),
-        padding: const EdgeInsets.all(8),
-        alignment: Alignment.bottomLeft,
-        child: Text(
-          '$title\n$artist',
-          style: const TextStyle(
-            color: Colors.white,
-            fontWeight: FontWeight.bold,
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(12),
+            gradient: LinearGradient(
+              colors: [Colors.black.withOpacity(0.6), Colors.transparent],
+              begin: Alignment.bottomCenter,
+              end: Alignment.topCenter,
+            ),
+          ),
+          padding: const EdgeInsets.all(8),
+          alignment: Alignment.bottomLeft,
+          child: Text(
+            '$title\n$artist',
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ),
       ),
@@ -229,8 +246,8 @@ class TrendingCard extends StatelessWidget {
 class MusicCard extends ConsumerWidget {
   final String title;
   final String subtitle;
-  final String songPath; // Add song path
-  final String coverImage; // Add cover image path
+  final String songPath;
+  final String coverImage;
 
   const MusicCard({
     required this.title,
@@ -265,6 +282,17 @@ class MusicCard extends ConsumerWidget {
               icon: const Icon(Icons.play_arrow, color: Colors.green),
               onPressed: () {
                 // Play the song
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => MusicPlayer(
+                      name: 'Arabian Night',
+                      image: 'assets/images/arabnight.jpg',
+                      songName: 'assets/songs/arabian_night.mp3',
+                      isAsset: true, // Mark as an asset
+                    ),
+                  ),
+                );
               },
             ),
             IconButton(
@@ -290,33 +318,4 @@ class MusicCard extends ConsumerWidget {
       ),
     );
   }
-}
-Future<List<Map<String, dynamic>>> getData() async {
-  return await DatabaseHelper().getSongs();
-}
-
-@override
-Widget build(BuildContext context) {
-  return FutureBuilder<List<Map<String, dynamic>>>(
-    future: getData(),
-    builder: (context, snapshot) {
-      if (snapshot.connectionState == ConnectionState.waiting) {
-        return Center(child: CircularProgressIndicator());
-      } else if (snapshot.hasError) {
-        return Center(child: Text('Error: ${snapshot.error}'));
-      } else {
-        final songs = snapshot.data;
-        return ListView.builder(
-          itemCount: songs?.length,
-          itemBuilder: (context, index) {
-            final song = songs?[index];
-            return ListTile(
-              title: Text(song?['title']),
-              subtitle: Text(song?['artist']),
-            );
-          },
-        );
-      }
-    },
-  );
 }

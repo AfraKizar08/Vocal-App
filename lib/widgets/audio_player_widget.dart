@@ -1,16 +1,20 @@
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:path_provider/path_provider.dart';
 
 class MusicPlayer extends StatefulWidget {
   final String name;
   final String image;
   final String songName;
+  final bool isAsset;
 
   const MusicPlayer({
     Key? key,
     required this.name,
     required this.image,
     required this.songName,
+    required this.isAsset,
   }) : super(key: key);
 
   @override
@@ -45,15 +49,86 @@ class _MusicPlayerState extends State<MusicPlayer> {
 
   Future<void> _playAudio() async {
     try {
-      await _audioPlayer.play(DeviceFileSource(widget.songName));
+      if (widget.isAsset) {
+        await _audioPlayer.play(AssetSource(widget.songName));
+      } else {
+        await _audioPlayer.play(DeviceFileSource(widget.songName));
+      }
+      setState(() {
+        isPlaying = true;
+      });
     } catch (e) {
-      print("Error playing audio: $e"); // Log the error
+      print("Error playing audio: $e");
     }
   }
-  @override
-  void dispose() {
-    _audioPlayer.dispose();
-    super.dispose();
+
+  Future<void> _downloadAudio() async {
+    try {
+      // Get the directory to save the downloaded file
+      final directory = await getApplicationDocumentsDirectory();
+      final filePath = '${directory.path}/${widget.songName.split('/').last}';
+
+      if (widget.isAsset) {
+        // Copy the file from assets
+        final assetData = await DefaultAssetBundle.of(context).load(widget.songName);
+        final file = File(filePath);
+        await file.writeAsBytes(assetData.buffer.asUint8List());
+      } else {
+        // Copy the file from the local device
+        final originalFile = File(widget.songName);
+        await originalFile.copy(filePath);
+      }
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Downloaded to $filePath')),
+      );
+    } catch (e) {
+      print("Error downloading file: $e");
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Failed to download file')),
+      );
+    }
+  }
+
+  Future<void> _addToPlaylist(BuildContext context) async {
+    TextEditingController playlistController = TextEditingController();
+    showModalBottomSheet(
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (context) {
+        return Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: playlistController,
+                decoration: const InputDecoration(
+                  labelText: 'Playlist Name',
+                  border: OutlineInputBorder(),
+                ),
+              ),
+              const SizedBox(height: 20),
+              ElevatedButton(
+                onPressed: () {
+                  final playlistName = playlistController.text.trim();
+                  if (playlistName.isNotEmpty) {
+                    // Save the song to the playlist in database (implement logic here)
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text('Added to playlist: $playlistName')),
+                    );
+                    Navigator.pop(context);
+                  }
+                },
+                child: const Text('Add to Playlist'),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 
   void playPause() async {
@@ -65,6 +140,12 @@ class _MusicPlayerState extends State<MusicPlayer> {
     setState(() {
       isPlaying = !isPlaying;
     });
+  }
+
+  @override
+  void dispose() {
+    _audioPlayer.dispose();
+    super.dispose();
   }
 
   @override
@@ -84,11 +165,13 @@ class _MusicPlayerState extends State<MusicPlayer> {
                   BoxShadow(
                     color: Colors.black54,
                     blurRadius: 20,
-                    offset: Offset(0, 10),
+                    offset: const Offset(0, 10),
                   ),
                 ],
                 image: DecorationImage(
-                  image: AssetImage(widget.image),
+                  image: widget.isAsset
+                      ? AssetImage(widget.image) as ImageProvider
+                      : FileImage(File(widget.image)),
                   fit: BoxFit.cover,
                 ),
               ),
@@ -108,15 +191,21 @@ class _MusicPlayerState extends State<MusicPlayer> {
             const SizedBox(height: 10),
             // Slider
             Slider(
-              value: _position.inSeconds.toDouble().clamp(0.0, _duration.inSeconds.toDouble()),
+              value: _position.inSeconds.toDouble(),
               min: 0.0,
-              max: _duration.inSeconds.toDouble() > 0 ? _duration.inSeconds.toDouble() : 1.0,
+              max: _duration.inSeconds.toDouble(),
               activeColor: Colors.deepPurple,
               inactiveColor: Colors.grey,
               onChanged: (value) async {
                 await _audioPlayer.seek(Duration(seconds: value.toInt()));
               },
             ),
+            // Duration Display
+            Text(
+              '${_position.inMinutes}:${(_position.inSeconds % 60).toString().padLeft(2, '0')} / ${_duration.inMinutes}:${(_duration.inSeconds % 60).toString().padLeft(2, '0')}',
+              style: const TextStyle(color: Colors.white),
+            ),
+            const SizedBox(height: 20),
             // Controls
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -124,7 +213,7 @@ class _MusicPlayerState extends State<MusicPlayer> {
                 IconButton(
                   icon: const Icon(Icons.skip_previous, color: Colors.white, size: 30),
                   onPressed: () {
-                    // Handle previous track
+                    // Implement previous track logic
                   },
                 ),
                 IconButton(
@@ -138,27 +227,28 @@ class _MusicPlayerState extends State<MusicPlayer> {
                 IconButton(
                   icon: const Icon(Icons.skip_next, color: Colors.white, size: 30),
                   onPressed: () {
-                    // Handle next track
+                    // Implement next track logic
                   },
                 ),
               ],
             ),
             const SizedBox(height: 20),
-            // Additional UI Elements
+            // Action Buttons
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: [
-                Text(
-                  _position.toString().split('.').first.substring(2),
-                  style: const TextStyle(color: Colors.white),
+                ElevatedButton.icon(
+                  onPressed: _downloadAudio,
+                  icon: const Icon(Icons.download),
+                  label: const Text('Download'),
                 ),
-                Text(
-                  _duration.toString().split('.').first.substring(2),
-                  style: const TextStyle(color: Colors.white),
+                ElevatedButton.icon(
+                  onPressed: () => _addToPlaylist(context),
+                  icon: const Icon(Icons.add),
+                  label: const Text('Add to Playlist'),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
           ],
         ),
       ),

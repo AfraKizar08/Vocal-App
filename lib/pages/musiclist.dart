@@ -71,10 +71,10 @@ class _MusicListState extends State<MusicList> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => MusicPlayer(
-                          name: song[
-                          'artist'], // Use the artist from the database or asset
+                          name: song['artist'],
                           image: song['coverImage'],
                           songName: song['filepath'],
+                          isAsset: song['filepath'].startsWith('assets/'), // Determine if it's an asset
                         ),
                       ),
                     );

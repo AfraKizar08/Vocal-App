@@ -39,14 +39,15 @@ class SignupPage extends StatelessWidget {
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(
-            builder: (context) => MusicPlayer(
-              name: 'Artist Name', // Replace with actual artist name if available
+            builder: (context) =>  MusicPlayer(
+              name: 'Sample Song',
               image: 'assets/images/default.png',
-              songName: 'Sample Song',
+              songName: 'assets/songs/sample_song.mp3',
+              isAsset: true, // Asset-based song
             ),
           ),
-
         );
+
       } catch (e) {
         showDialog(
           context: context,
